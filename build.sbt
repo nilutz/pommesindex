@@ -12,7 +12,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala,SbtWeb)
 libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
 libraryDependencies ++= Seq(
   specs2 % Test,
-   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1"
+   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1",
+   "com.typesafe.play.extras" %% "play-geojson" % "1.4.0"
 )
 
 playRunHooks <+= baseDirectory.map(Webpack.apply)

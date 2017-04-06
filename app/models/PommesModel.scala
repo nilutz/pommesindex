@@ -4,18 +4,18 @@ import play.api.libs.json.Json
 import reactivemongo.bson.BSONObjectID
 import play.modules.reactivemongo.json.BSONFormats._
 import reactivemongo.play.json.BSONFormats.BSONObjectIDFormat
+import play.extras.geojson._
 
-import models.GeoLocation
 /**
  * A pommes class
  *
  * @param _id The BSON object id of the pommesindex
- * @param pindex of th epommes
+ * @param pindex of the pommes
  * @param userId Id of the User
- * @param location Geolocation of the pommesindex
+ * @param location of the pommesindex as geojson point
  *
  */
-case class Pommes(_id: BSONObjectID, pindex: String, userId: String, location: GeoLocation)
+case class Pommes(_id: BSONObjectID, pindex: String, userId: String, location: Point[LatLng])
 
 object Pommes {
   /**
