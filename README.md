@@ -28,3 +28,16 @@ in another tab
 back to first tab
 
 	sbt run
+
+### Todo
+ security, https, ssl, tls, ws, apikey
+
+ next ismorphic, 
+
+
+### Honor to whom honor is due
+ https://github.com/adrianhurt/play-api-rest-seed
+
+ https://github.com/istarkov/google-map-react
+
+ https://github.com/ersefuril/play-framework-react-isomorphic

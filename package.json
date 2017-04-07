@@ -1,7 +1,7 @@
 {
   "name": "pommesindex",
   "version": "1.0.0",
-  "description": "Playframework + React Js + webpack + REST API in Scala",
+  "description": "Playframework + React Js + webpack + REST API in Scala ,ismorphic?",
   "main": "index.js",
   "author": "Nico Lutz",
   "license": "ISC",
@@ -26,8 +26,8 @@
   "homepage": "pommes.index",
   "dependencies": {
     "google-map-react": "^0.23.0",
-    "react": "^0.14.5",
-    "react-dom": "^0.14.5"
+    "react": "15.2.1",
+    "react-dom": "15.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.4.0",
@@ -42,8 +42,10 @@
     "eslint": "^2.0.0",
     "eslint-loader": "^1.2.0",
     "eslint-plugin-react": "^6.10.3",
+    "jquery": "^3.2.1",
     "jsx-loader": "^0.13.2",
     "node-sass": "^3.4.2",
+    "reflux": "^6.4.1",
     "sass-loader": "^3.1.2",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.10"

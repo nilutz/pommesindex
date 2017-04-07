@@ -38,15 +38,16 @@ var config = {
             include: /\/app\/assets/,
             loader: 'style!css!sass'
         }]
-    },
-    plugins: [
-        //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: { warnings: false },
-            output: { comments: false }
-        }),
-        new webpack.NoErrorsPlugin()
-    ]
+    }
+    //,
+    // plugins: [
+    //     //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
+    //     new webpack.optimize.UglifyJsPlugin({
+    //         compress: { warnings: false },
+    //         output: { comments: false }
+    //     }),
+    //     new webpack.NoErrorsPlugin()
+    // ]
 };
 
 module.exports = config;
