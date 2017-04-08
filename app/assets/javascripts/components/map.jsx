@@ -7,9 +7,12 @@ import shouldPureComponentUpdate from 'react-pure-render/function';
 
 //
 import GoogleMap from 'google-map-react';
-import MyGreatPlace from './my_great_place.jsx';
-import MapActions from './MapActions';
-import MapStore from './MapStore';
+import PommesMarker from './pommesMarker.jsx';
+import PlaceMarker from './placeMarker.jsx'
+import MapActions from '../actions/MapActions';
+import MapStore from '../stores/MapStore';
+
+import MyGreatPlace from './my_great_place.jsx'
 
 function _onClick(obj){ console.log(obj.x, obj.y, obj.lat, obj.lng, obj.event);
 
@@ -35,7 +38,11 @@ class Map extends RefluxComponent {
 
   constructor(props) {
     super(props);
-       //MapActions.getMoreMarkers(0);
+
+    //load markers if not already loaded
+    if(MapStore.markers.length == 0){
+      MapActions.getMoreMarkers(0);
+    }
 
   }
 
@@ -78,24 +85,22 @@ class Map extends RefluxComponent {
           {MapStore.markers.map((marker, index) => {
               console.log(marker.location.coordinates[0])
               return (
-                <MyGreatPlace
+                <PommesMarker
                   lat={marker.location.coordinates[0]}
                   lng={marker.location.coordinates[1]}
-                  text={marker.userId}
+                  text={marker.pindex}
                   key={marker._id.$oid}
-
-                ></MyGreatPlace>
+                ></PommesMarker>
               );
           })}
           {MapStore.place.map((marker,index) =>{
               return (
-                <MyGreatPlace
+                <PlaceMarker
                   lat={marker.location.coordinates[0]}
                   lng={marker.location.coordinates[1]}
-                  text={marker.userId}
+                  text={marker.pindex}
                   key={marker._id.$oid}
-
-                ></MyGreatPlace>
+                ></PlaceMarker>
               );
           })}
 

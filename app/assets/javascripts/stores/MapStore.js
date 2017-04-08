@@ -2,8 +2,8 @@
  * 
  */
 const Reflux = require('reflux');
-const MapActions = require("./MapActions");
-const { ApiCalls } = require("./ApiCalls");
+const MapActions = require("../actions/MapActions");
+const { ApiCalls } = require("../utils/ApiCalls");
 
 
 var MapStore = Reflux.createStore({

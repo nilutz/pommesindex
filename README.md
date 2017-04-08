@@ -1,17 +1,18 @@
 # Pommesindex
-===============
+
 this is the pommesindex, rate a pommes on your current location or get the best pommes around you.
+Includes: Webpack, React, Rest Api in Scala, MongoDB
 
 STILL HEAVILY A WORK IN PROGRESS
 
 ### What this is
-===============
+
 This is the backend (play framework) and frontend (react). Project started as a sample project to get to know current technologies. Mobile apps are in progess, too.
 
 
 ### Get started
-==============
-What you need
+
+#### What you need
 
 activator-ui (brew),
 node

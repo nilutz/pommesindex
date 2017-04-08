@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Greeter from './Greeter.jsx';
-import Map from './map.jsx'
+import Greeter from './components/Greeter.jsx';
+import Map from './components/map.jsx'
 
 import '../stylesheets/style.scss'
 
