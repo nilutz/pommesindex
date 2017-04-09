@@ -39,7 +39,7 @@ var config = {
             loader: 'style!css!sass'
         }]
     }
-    //,
+    // ,
     // plugins: [
     //     //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
     //     new webpack.optimize.UglifyJsPlugin({

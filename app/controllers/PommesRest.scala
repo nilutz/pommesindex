@@ -14,7 +14,6 @@ import repos.PommesRestRepoImpl
 import scala.concurrent.Future
 import play.extras.geojson._
 
-
 class PommesRest @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Controller
   with MongoController with ReactiveMongoComponents {
 
@@ -27,6 +26,14 @@ class PommesRest @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Cont
    */
   def index = Action.async { implicit request =>
     pommesRepo.find().map(pommes => Ok(Json.toJson(pommes)))
+  }
+
+  /**
+   * gives limited pommes in the DB
+   * @param a limit
+   */
+  def indexlimit(limit: Int = 100) = Action.async { implicit request =>
+    pommesRepo.findWithLimit(limit).map(pommes => Ok(Json.toJson(pommes)))
   }
 
   /**
@@ -50,7 +57,6 @@ class PommesRest @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Cont
     //  val location = (request.body \ Location).as[Point[LatLng]]
     //  pommesRepo.update(BSONDocument(Id -> BSONObjectID(id)),
     //    BSONDocument("$set" -> BSONDocument(PIndex -> pindex,UserId -> userId, Location -> location))).map(result => Accepted)
-
     pommesRepo.remove(BSONDocument(Id -> BSONObjectID(id))).map(result => Accepted)
 
   }
@@ -80,6 +86,17 @@ class PommesRest @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Cont
     Json.fromJson[PommesForm](request.body).fold(
       invalid => Future.successful(BadRequest("Bad message format")),
       form => pommesRepo.create(form.toPommes).map(result => Accepted))
+  }
+
+  /**
+   * finds a pommes in a radius
+   * @param latitude‚
+   * @param longitude
+   * @param radius in meter
+   * @param limit
+   */
+  def findNear(lat: Double, lng: Double, radius: Int = 3000, limit: Int = 100) = Action.async { implicit request =>
+    pommesRepo.nearPoint(lat, lng, radius, limit).map(pommes => Ok(Json.toJson(pommes)))
   }
 
 }

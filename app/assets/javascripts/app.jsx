@@ -7,8 +7,8 @@ import '../stylesheets/style.scss'
 
 render((
     <div>
-        <h1>Playframework, React JS, ES 6 and webpack AND a fucking Rest API in Scala
+        <h1>Welcome to the Pommesindex
     	</h1>
-        <Greeter name="Ninja" />
+        <Greeter name="UserId" />
         <Map name="map" />
     </div>), document.getElementById("app"));

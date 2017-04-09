@@ -25,9 +25,9 @@ var MapStore = Reflux.createStore({
         }
     },
 
-    onGetMoreMarkers(radius) {
+    onGetMoreMarkers(lat, lng, radius, limit) {
         // Get more posts from server
-        this._getMarkers(radius);
+        this._getMarkers(lat, lng, radius, limit);
     },
 
     // _getMarkers(radius = 1000) {
@@ -36,15 +36,13 @@ var MapStore = Reflux.createStore({
     //         this.trigger();
     //     });
     // }
-    _getMarkers(radius = 0) {
-        ApiCalls.getAllMarkers().done((markers) => {
+    _getMarkers(lat, lng, radius, limit) {
+        ApiCalls.getMarkersNear(lat, lng, radius, limit).done((markers) => {
             this.markers = this.markers.concat(markers);
             this.trigger();
-            console.log('_getMarkers', this.markers)
         });
     },
     onPutPlaceOnMap(lat, lng) {
-        console.log('putPlaceOnMap', lat)
         this.place = [{
             "_id": {
                 "$oid": "dummy123"

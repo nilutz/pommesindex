@@ -10,8 +10,12 @@ GET     /                           controllers.Application.index
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 # Simple Restful database queries
-GET 	/api/pommesindex 		controllers.PommesRest.index
+GET 	/api/pommesindex/nolimit 		controllers.PommesRest.index
+GET 	/api/pommesindex/:limit 		controllers.PommesRest.indexlimit(limit: Int)
 GET 	/api/pommesindex/:id	controllers.PommesRest.read(id: String)
+GET 	/api/pommesindex/near/:lat/:lng/:radius/:limit	controllers.PommesRest.findNear(lat: Double, lng: Double,radius: Int, limit: Int)
+
+
 POST 	/api/pommesindex 		controllers.PommesRest.insert
 DELETE	/api/pommesindex/:id	controllers.PommesRest.delete(id: String)
 PATCH	/api/pommesindex/:id 	controllers.PommesRest.update(id: String)

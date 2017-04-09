@@ -1,6 +1,7 @@
 import React, {PropTypes, Component} from 'react';
 // import { Link } from 'react-router';
 // import { example, p, link } from './styles';
+import Reflux from 'reflux' ;
 const { RefluxComponent } = require("react-commons");
 
 import shouldPureComponentUpdate from 'react-pure-render/function';
@@ -41,7 +42,12 @@ class Map extends RefluxComponent {
 
     //load markers if not already loaded
     if(MapStore.markers.length == 0){
-      MapActions.getMoreMarkers(0);
+      var lat = this.props.center[0]
+      var lng = this.props.center[1]
+      var limit = 100
+
+      var radius = 300000
+      MapActions.getMoreMarkers(lat, lng, radius, limit);
     }
 
   }
@@ -56,8 +62,6 @@ class Map extends RefluxComponent {
   //when clicked on the map a new marker appears
   handleMapClick(event) {
 
-      console.log(event)
-      //MapActions.getMoreMarkers(0);
       MapActions.putPlaceOnMap(event.lat,event.lng)
 
   }
@@ -79,11 +83,9 @@ class Map extends RefluxComponent {
           options={createMapOptions} 
           center={this.props.center}
           zoom={this.props.zoom}>
-          <MyGreatPlace lat={59.955413} lng={30.337844} text={'A'} /* Kreyser Avrora */ />
-          <MyGreatPlace {...this.props.greatPlaceCoords} text={'B'} /* road circle */ />
+         
         
           {MapStore.markers.map((marker, index) => {
-              console.log(marker.location.coordinates[0])
               return (
                 <PommesMarker
                   lat={marker.location.coordinates[0]}
@@ -98,7 +100,6 @@ class Map extends RefluxComponent {
                 <PlaceMarker
                   lat={marker.location.coordinates[0]}
                   lng={marker.location.coordinates[1]}
-                  text={marker.pindex}
                   key={marker._id.$oid}
                 ></PlaceMarker>
               );
@@ -114,13 +115,11 @@ class Map extends RefluxComponent {
   Map.propTypes = {
     center: PropTypes.array,
     zoom: PropTypes.number,
-    greatPlaceCoords: PropTypes.any
   };
 
   Map.defaultProps = {
     center: [59.938043, 30.337157],
     zoom: 9,
-    greatPlaceCoords: {lat: 59.724465, lng: 30.080121}
   };
 
 export default Map;

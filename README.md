@@ -33,7 +33,9 @@ back to first tab
 ### Todo
  security, https, ssl, tls, ws, apikey
 
- next ismorphic, 
+ next ismorphic
+
+ more queries
 
 
 ### Honor to whom honor is due

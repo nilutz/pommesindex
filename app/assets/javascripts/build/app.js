@@ -70,9 +70,9 @@
 	    _react2.default.createElement(
 	        'h1',
 	        null,
-	        'Playframework, React JS, ES 6 and webpack AND a fucking Rest API in Scala'
+	        'Welcome to the Pommesindex'
 	    ),
-	    _react2.default.createElement(_Greeter2.default, { name: 'Ninja' }),
+	    _react2.default.createElement(_Greeter2.default, { name: 'UserId' }),
 	    _react2.default.createElement(_map2.default, { name: 'map' })
 	), document.getElementById("app"));
 
@@ -21259,35 +21259,37 @@
 	  value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _function = __webpack_require__(174);
+	var _reflux = __webpack_require__(174);
+
+	var _reflux2 = _interopRequireDefault(_reflux);
+
+	var _function = __webpack_require__(195);
 
 	var _function2 = _interopRequireDefault(_function);
 
-	var _googleMapReact = __webpack_require__(176);
+	var _googleMapReact = __webpack_require__(197);
 
 	var _googleMapReact2 = _interopRequireDefault(_googleMapReact);
 
-	var _pommesMarker = __webpack_require__(200);
+	var _pommesMarker = __webpack_require__(220);
 
 	var _pommesMarker2 = _interopRequireDefault(_pommesMarker);
 
-	var _placeMarker = __webpack_require__(202);
+	var _placeMarker = __webpack_require__(222);
 
 	var _placeMarker2 = _interopRequireDefault(_placeMarker);
 
-	var _MapActions = __webpack_require__(204);
+	var _MapActions = __webpack_require__(393);
 
 	var _MapActions2 = _interopRequireDefault(_MapActions);
 
-	var _MapStore = __webpack_require__(225);
+	var _MapStore = __webpack_require__(394);
 
 	var _MapStore2 = _interopRequireDefault(_MapStore);
 
@@ -21302,10 +21304,11 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 	// import { Link } from 'react-router';
 	// import { example, p, link } from './styles';
-	var _require = __webpack_require__(227),
+
+
+	var _require = __webpack_require__(225),
 	    RefluxComponent = _require.RefluxComponent;
 
 	//
@@ -21341,7 +21344,12 @@
 	    };
 
 	    if (_MapStore2.default.markers.length == 0) {
-	      _MapActions2.default.getMoreMarkers(0);
+	      var lat = _this.props.center[0];
+	      var lng = _this.props.center[1];
+	      var limit = 100;
+
+	      var radius = 300000;
+	      _MapActions2.default.getMoreMarkers(lat, lng, radius, limit);
 	    }
 
 	    return _this;
@@ -21360,8 +21368,6 @@
 	    //when clicked on the map a new marker appears
 	    value: function handleMapClick(event) {
 
-	      console.log(event);
-	      //MapActions.getMoreMarkers(0);
 	      _MapActions2.default.putPlaceOnMap(event.lat, event.lng);
 	    }
 
@@ -21387,10 +21393,7 @@
 	            options: createMapOptions,
 	            center: this.props.center,
 	            zoom: this.props.zoom },
-	          _react2.default.createElement(_my_great_place2.default, { lat: 59.955413, lng: 30.337844, text: 'A' /* Kreyser Avrora */ }),
-	          _react2.default.createElement(_my_great_place2.default, _extends({}, this.props.greatPlaceCoords, { text: 'B' /* road circle */ })),
 	          _MapStore2.default.markers.map(function (marker, index) {
-	            console.log(marker.location.coordinates[0]);
 	            return _react2.default.createElement(_pommesMarker2.default, {
 	              lat: marker.location.coordinates[0],
 	              lng: marker.location.coordinates[1],
@@ -21402,7 +21405,6 @@
 	            return _react2.default.createElement(_placeMarker2.default, {
 	              lat: marker.location.coordinates[0],
 	              lng: marker.location.coordinates[1],
-	              text: marker.pindex,
 	              key: marker._id.$oid
 	            });
 	          })
@@ -21416,20 +21418,2118 @@
 
 	Map.propTypes = {
 	  center: _react.PropTypes.array,
-	  zoom: _react.PropTypes.number,
-	  greatPlaceCoords: _react.PropTypes.any
+	  zoom: _react.PropTypes.number
 	};
 
 	Map.defaultProps = {
 	  center: [59.938043, 30.337157],
-	  zoom: 9,
-	  greatPlaceCoords: { lat: 59.724465, lng: 30.080121 }
+	  zoom: 9
 	};
 
 	exports.default = Map;
 
 /***/ },
 /* 174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Reflux = __webpack_require__(175);
+
+	Reflux.serverMode = typeof window !== 'object';
+
+	Reflux.connect = __webpack_require__(188);
+
+	Reflux.connectFilter = __webpack_require__(190);
+
+	Reflux.ListenerMixin = __webpack_require__(189);
+
+	Reflux.listenTo = __webpack_require__(191);
+
+	Reflux.listenToMany = __webpack_require__(192);
+
+	__webpack_require__(193);
+
+	module.exports = Reflux;
+
+
+/***/ },
+/* 175 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.__keep = exports.joinConcat = exports.joinStrict = exports.joinLeading = exports.all = exports.joinTrailing = exports.use = exports.nextTick = exports.setEventEmitter = exports.createActions = exports.createStore = exports.createAction = exports.utils = exports.StoreMethods = exports.PublisherMethods = exports.ListenerMethods = exports.ActionMethods = exports.version = undefined;
+
+	var _ActionMethods = __webpack_require__(176);
+
+	var ActionMethods = _interopRequireWildcard(_ActionMethods);
+
+	var _ListenerMethods = __webpack_require__(177);
+
+	var ListenerMethods = _interopRequireWildcard(_ListenerMethods);
+
+	var _PublisherMethods = __webpack_require__(186);
+
+	var PublisherMethods = _interopRequireWildcard(_PublisherMethods);
+
+	var _StoreMethods = __webpack_require__(185);
+
+	var StoreMethods = _interopRequireWildcard(_StoreMethods);
+
+	var _joins = __webpack_require__(180);
+
+	var _utils = __webpack_require__(178);
+
+	var _ = _interopRequireWildcard(_utils);
+
+	var _createAction = __webpack_require__(187);
+
+	var _createStore = __webpack_require__(181);
+
+	var _Keep = __webpack_require__(182);
+
+	var __keep = _interopRequireWildcard(_Keep);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var version = {
+	    "reflux-core": "1.0.0"
+	};
+
+	var joinTrailing = (0, _joins.staticJoinCreator)("last");
+	var all = joinTrailing; // Reflux.all alias for backward compatibility
+	var joinLeading = (0, _joins.staticJoinCreator)("first");
+	var joinStrict = (0, _joins.staticJoinCreator)("strict");
+	var joinConcat = (0, _joins.staticJoinCreator)("all");
+
+	var utils = _;
+
+
+	/**
+	 * Convenience function for creating a set of actions
+	 *
+	 * @param definitions the definitions for the actions to be created
+	 * @returns an object with actions of corresponding action names
+	 */
+	var createActions = function () {
+	    var reducer = function reducer(definitions, actions) {
+	        Object.keys(definitions).forEach(function (actionName) {
+	            var val = definitions[actionName];
+	            actions[actionName] = (0, _createAction.createAction)(val);
+	        });
+	    };
+
+	    return function (definitions) {
+	        var actions = {};
+	        if (definitions instanceof Array) {
+	            definitions.forEach(function (val) {
+	                if (_.isObject(val)) {
+	                    reducer(val, actions);
+	                } else {
+	                    actions[val] = (0, _createAction.createAction)(val);
+	                }
+	            });
+	        } else {
+	            reducer(definitions, actions);
+	        }
+	        return actions;
+	    };
+	}();
+
+	/**
+	 * Sets the eventmitter that Reflux uses
+	 */
+	function setEventEmitter(ctx) {
+	    _.EventEmitter = ctx;
+	}
+
+	/**
+	 * Sets the method used for deferring actions and stores
+	 */
+	function nextTick(nextTick) {
+	    _.nextTick = nextTick;
+	}
+
+	function use(pluginCb) {
+	    pluginCb(this);
+	}
+
+	/**
+	 * Provides the set of created actions and stores for introspection
+	 */
+	/*eslint-disable no-underscore-dangle*/
+
+
+	// export in format that supports syntax: var Reflux = require('reflux-core');
+	exports.version = version;
+	exports.ActionMethods = ActionMethods;
+	exports.ListenerMethods = ListenerMethods;
+	exports.PublisherMethods = PublisherMethods;
+	exports.StoreMethods = StoreMethods;
+	exports.utils = utils;
+	exports.createAction = _createAction.createAction;
+	exports.createStore = _createStore.createStore;
+	exports.createActions = createActions;
+	exports.setEventEmitter = setEventEmitter;
+	exports.nextTick = nextTick;
+	exports.use = use;
+	exports.joinTrailing = joinTrailing;
+	exports.all = all;
+	exports.joinLeading = joinLeading;
+	exports.joinStrict = joinStrict;
+	exports.joinConcat = joinConcat;
+	exports.__keep = __keep;
+	/*eslint-enable no-underscore-dangle*/
+
+	// export in format that supports syntax: import Reflux from 'reflux-core';
+
+	Object.defineProperty(exports, "default", {
+	    get: function get() {
+	        return exports;
+	    }
+	});
+
+	/**
+	 * Warn if Function.prototype.bind not available
+	 */
+	if (!Function.prototype.bind) {
+	    console.error("Function.prototype.bind not available. " + "ES5 shim required. " + "https://github.com/spoike/refluxjs#es5");
+	}
+
+/***/ },
+/* 176 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.joinStrict = exports.joinConcat = exports.joinLeading = exports.joinTrailing = exports.fetchInitialState = exports.stopListeningToAll = exports.stopListeningTo = exports.listenTo = exports.validateListening = exports.listenToMany = exports.hasListener = undefined;
+
+	var _utils = __webpack_require__(178);
+
+	var _ = _interopRequireWildcard(_utils);
+
+	var _joins = __webpack_require__(180);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/**
+	 * Extract child listenables from a parent from their
+	 * children property and return them in a keyed Object
+	 *
+	 * @param {Object} listenable The parent listenable
+	 */
+	var mapChildListenables = function mapChildListenables(listenable) {
+	    var i = 0,
+	        children = {},
+	        childName;
+	    for (; i < (listenable.children || []).length; ++i) {
+	        childName = listenable.children[i];
+	        if (listenable[childName]) {
+	            children[childName] = listenable[childName];
+	        }
+	    }
+	    return children;
+	};
+
+	/**
+	 * Make a flat dictionary of all listenables including their
+	 * possible children (recursively), concatenating names in camelCase.
+	 *
+	 * @param {Object} listenables The top-level listenables
+	 */
+	var flattenListenables = function flattenListenables(listenables) {
+	    var flattened = {};
+	    for (var key in listenables) {
+	        var listenable = listenables[key];
+	        var childMap = mapChildListenables(listenable);
+
+	        // recursively flatten children
+	        var children = flattenListenables(childMap);
+
+	        // add the primary listenable and chilren
+	        flattened[key] = listenable;
+	        for (var childKey in children) {
+	            var childListenable = children[childKey];
+	            flattened[key + _.capitalize(childKey)] = childListenable;
+	        }
+	    }
+
+	    return flattened;
+	};
+
+	/**
+	 * An internal utility function used by `validateListening`
+	 *
+	 * @param {Action|Store} listenable The listenable we want to search for
+	 * @returns {Boolean} The result of a recursive search among `this.subscriptions`
+	 */
+	var hasListener = exports.hasListener = function hasListener(listenable) {
+	    var i = 0,
+	        j,
+	        listener,
+	        listenables;
+	    for (; i < (this.subscriptions || []).length; ++i) {
+	        listenables = [].concat(this.subscriptions[i].listenable);
+	        for (j = 0; j < listenables.length; j++) {
+	            listener = listenables[j];
+	            if (listener === listenable || listener.hasListener && listener.hasListener(listenable)) {
+	                return true;
+	            }
+	        }
+	    }
+	    return false;
+	};
+
+	/**
+	 * A convenience method that listens to all listenables in the given object.
+	 *
+	 * @param {Object} listenables An object of listenables. Keys will be used as callback method names.
+	 */
+	var listenToMany = exports.listenToMany = function listenToMany(listenables) {
+	    var allListenables = flattenListenables(listenables);
+	    for (var key in allListenables) {
+	        var cbname = _.callbackName(key),
+	            localname = this[cbname] ? cbname : this[key] ? key : undefined;
+	        if (localname) {
+	            this.listenTo(allListenables[key], localname, this[cbname + "Default"] || this[localname + "Default"] || localname);
+	        }
+	    }
+	};
+
+	/**
+	 * Checks if the current context can listen to the supplied listenable
+	 *
+	 * @param {Action|Store} listenable An Action or Store that should be
+	 *  listened to.
+	 * @returns {String|Undefined} An error message, or undefined if there was no problem.
+	 */
+	var validateListening = exports.validateListening = function validateListening(listenable) {
+	    if (listenable === this) {
+	        return "Listener is not able to listen to itself";
+	    }
+	    if (!_.isFunction(listenable.listen)) {
+	        return listenable + " is missing a listen method";
+	    }
+	    if (listenable.hasListener && listenable.hasListener(this)) {
+	        return "Listener cannot listen to this listenable because of circular loop";
+	    }
+	};
+
+	/**
+	 * Sets up a subscription to the given listenable for the context object
+	 *
+	 * @param {Action|Store} listenable An Action or Store that should be
+	 *  listened to.
+	 * @param {Function|String} callback The callback to register as event handler
+	 * @param {Function|String} defaultCallback The callback to register as default handler
+	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is the object being listened to
+	 */
+	var listenTo = exports.listenTo = function listenTo(listenable, callback, defaultCallback) {
+	    var desub,
+	        unsubscriber,
+	        subscriptionobj,
+	        subs = this.subscriptions = this.subscriptions || [];
+	    _.throwIf(this.validateListening(listenable));
+	    this.fetchInitialState(listenable, defaultCallback);
+	    desub = listenable.listen(this[callback] || callback, this);
+	    unsubscriber = function unsubscriber() {
+	        var index = subs.indexOf(subscriptionobj);
+	        _.throwIf(index === -1, "Tried to remove listen already gone from subscriptions list!");
+	        subs.splice(index, 1);
+	        desub();
+	    };
+	    subscriptionobj = {
+	        stop: unsubscriber,
+	        listenable: listenable
+	    };
+	    subs.push(subscriptionobj);
+	    return subscriptionobj;
+	};
+
+	/**
+	 * Stops listening to a single listenable
+	 *
+	 * @param {Action|Store} listenable The action or store we no longer want to listen to
+	 * @returns {Boolean} True if a subscription was found and removed, otherwise false.
+	 */
+	var stopListeningTo = exports.stopListeningTo = function stopListeningTo(listenable) {
+	    var sub,
+	        i = 0,
+	        subs = this.subscriptions || [];
+	    for (; i < subs.length; i++) {
+	        sub = subs[i];
+	        if (sub.listenable === listenable) {
+	            sub.stop();
+	            _.throwIf(subs.indexOf(sub) !== -1, "Failed to remove listen from subscriptions list!");
+	            return true;
+	        }
+	    }
+	    return false;
+	};
+
+	/**
+	 * Stops all subscriptions and empties subscriptions array
+	 */
+	var stopListeningToAll = exports.stopListeningToAll = function stopListeningToAll() {
+	    var remaining,
+	        subs = this.subscriptions || [];
+	    while (remaining = subs.length) {
+	        subs[0].stop();
+	        _.throwIf(subs.length !== remaining - 1, "Failed to remove listen from subscriptions list!");
+	    }
+	};
+
+	/**
+	 * Used in `listenTo`. Fetches initial data from a publisher if it has a `getInitialState` method.
+	 * @param {Action|Store} listenable The publisher we want to get initial state from
+	 * @param {Function|String} defaultCallback The method to receive the data
+	 */
+	var fetchInitialState = exports.fetchInitialState = function fetchInitialState(listenable, defaultCallback) {
+	    defaultCallback = defaultCallback && this[defaultCallback] || defaultCallback;
+	    var me = this;
+	    if (_.isFunction(defaultCallback) && _.isFunction(listenable.getInitialState)) {
+	        var data = listenable.getInitialState();
+	        if (data && _.isFunction(data.then)) {
+	            data.then(function () {
+	                defaultCallback.apply(me, arguments);
+	            });
+	        } else {
+	            defaultCallback.call(this, data);
+	        }
+	    }
+	};
+
+	/**
+	 * The callback will be called once all listenables have triggered at least once.
+	 * It will be invoked with the last emission from each listenable.
+	 * @param {...Publishers} publishers Publishers that should be tracked.
+	 * @param {Function|String} callback The method to call when all publishers have emitted
+	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is an array of listenables
+	 */
+	var joinTrailing = exports.joinTrailing = (0, _joins.instanceJoinCreator)("last");
+
+	/**
+	 * The callback will be called once all listenables have triggered at least once.
+	 * It will be invoked with the first emission from each listenable.
+	 * @param {...Publishers} publishers Publishers that should be tracked.
+	 * @param {Function|String} callback The method to call when all publishers have emitted
+	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is an array of listenables
+	 */
+	var joinLeading = exports.joinLeading = (0, _joins.instanceJoinCreator)("first");
+
+	/**
+	 * The callback will be called once all listenables have triggered at least once.
+	 * It will be invoked with all emission from each listenable.
+	 * @param {...Publishers} publishers Publishers that should be tracked.
+	 * @param {Function|String} callback The method to call when all publishers have emitted
+	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is an array of listenables
+	 */
+	var joinConcat = exports.joinConcat = (0, _joins.instanceJoinCreator)("all");
+
+	/**
+	 * The callback will be called once all listenables have triggered.
+	 * If a callback triggers twice before that happens, an error is thrown.
+	 * @param {...Publishers} publishers Publishers that should be tracked.
+	 * @param {Function|String} callback The method to call when all publishers have emitted
+	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is an array of listenables
+	 */
+	var joinStrict = exports.joinStrict = (0, _joins.instanceJoinCreator)("strict");
+
+/***/ },
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.capitalize = capitalize;
+	exports.callbackName = callbackName;
+	exports.isObject = isObject;
+	exports.extend = extend;
+	exports.isFunction = isFunction;
+	exports.nextTick = nextTick;
+	exports.object = object;
+	exports.isArguments = isArguments;
+	exports.throwIf = throwIf;
+	function capitalize(string) {
+	    return string.charAt(0).toUpperCase() + string.slice(1);
+	}
+
+	function callbackName(string, prefix) {
+	    prefix = prefix || "on";
+	    return prefix + exports.capitalize(string);
+	}
+
+	/*
+	 * isObject, extend, isFunction, isArguments are taken from underscore/lodash in
+	 * order to remove the dependency
+	 */
+	function isObject(obj) {
+	    var type = typeof obj === "undefined" ? "undefined" : _typeof(obj);
+	    return type === "function" || type === "object" && !!obj;
+	}
+
+	function extend(obj) {
+	    if (!isObject(obj)) {
+	        return obj;
+	    }
+	    var source, keys, prop;
+	    for (var i = 1, length = arguments.length; i < length; i++) {
+	        source = arguments[i];
+	        keys = Object.keys(source);
+	        for (var j = 0; j < keys.length; j++) {
+	            prop = keys[j];
+	            if (Object.getOwnPropertyDescriptor && Object.defineProperty) {
+	                var propertyDescriptor = Object.getOwnPropertyDescriptor(source, prop);
+	                Object.defineProperty(obj, prop, propertyDescriptor);
+	            } else {
+	                obj[prop] = source[prop];
+	            }
+	        }
+	    }
+	    return obj;
+	}
+
+	function isFunction(value) {
+	    return typeof value === "function";
+	}
+
+	exports.EventEmitter = __webpack_require__(179);
+
+	function nextTick(callback) {
+	    setTimeout(callback, 0);
+	}
+
+	function object(keys, vals) {
+	    var o = {},
+	        i = 0;
+	    for (; i < keys.length; i++) {
+	        o[keys[i]] = vals[i];
+	    }
+	    return o;
+	}
+
+	function isArguments(value) {
+	    return (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" && "callee" in value && typeof value.length === "number";
+	}
+
+	function throwIf(val, msg) {
+	    if (val) {
+	        throw Error(msg || val);
+	    }
+	}
+
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var has = Object.prototype.hasOwnProperty;
+
+	//
+	// We store our EE objects in a plain object whose properties are event names.
+	// If `Object.create(null)` is not supported we prefix the event names with a
+	// `~` to make sure that the built-in object properties are not overridden or
+	// used as an attack vector.
+	// We also assume that `Object.create(null)` is available when the event name
+	// is an ES6 Symbol.
+	//
+	var prefix = typeof Object.create !== 'function' ? '~' : false;
+
+	/**
+	 * Representation of a single EventEmitter function.
+	 *
+	 * @param {Function} fn Event handler to be called.
+	 * @param {Mixed} context Context for function execution.
+	 * @param {Boolean} [once=false] Only emit once
+	 * @api private
+	 */
+	function EE(fn, context, once) {
+	  this.fn = fn;
+	  this.context = context;
+	  this.once = once || false;
+	}
+
+	/**
+	 * Minimal EventEmitter interface that is molded against the Node.js
+	 * EventEmitter interface.
+	 *
+	 * @constructor
+	 * @api public
+	 */
+	function EventEmitter() { /* Nothing to set */ }
+
+	/**
+	 * Hold the assigned EventEmitters by name.
+	 *
+	 * @type {Object}
+	 * @private
+	 */
+	EventEmitter.prototype._events = undefined;
+
+	/**
+	 * Return an array listing the events for which the emitter has registered
+	 * listeners.
+	 *
+	 * @returns {Array}
+	 * @api public
+	 */
+	EventEmitter.prototype.eventNames = function eventNames() {
+	  var events = this._events
+	    , names = []
+	    , name;
+
+	  if (!events) return names;
+
+	  for (name in events) {
+	    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+	  }
+
+	  if (Object.getOwnPropertySymbols) {
+	    return names.concat(Object.getOwnPropertySymbols(events));
+	  }
+
+	  return names;
+	};
+
+	/**
+	 * Return a list of assigned event listeners.
+	 *
+	 * @param {String} event The events that should be listed.
+	 * @param {Boolean} exists We only need to know if there are listeners.
+	 * @returns {Array|Boolean}
+	 * @api public
+	 */
+	EventEmitter.prototype.listeners = function listeners(event, exists) {
+	  var evt = prefix ? prefix + event : event
+	    , available = this._events && this._events[evt];
+
+	  if (exists) return !!available;
+	  if (!available) return [];
+	  if (available.fn) return [available.fn];
+
+	  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
+	    ee[i] = available[i].fn;
+	  }
+
+	  return ee;
+	};
+
+	/**
+	 * Emit an event to all registered event listeners.
+	 *
+	 * @param {String} event The name of the event.
+	 * @returns {Boolean} Indication if we've emitted an event.
+	 * @api public
+	 */
+	EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+	  var evt = prefix ? prefix + event : event;
+
+	  if (!this._events || !this._events[evt]) return false;
+
+	  var listeners = this._events[evt]
+	    , len = arguments.length
+	    , args
+	    , i;
+
+	  if ('function' === typeof listeners.fn) {
+	    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+	    switch (len) {
+	      case 1: return listeners.fn.call(listeners.context), true;
+	      case 2: return listeners.fn.call(listeners.context, a1), true;
+	      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+	      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+	      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+	      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+	    }
+
+	    for (i = 1, args = new Array(len -1); i < len; i++) {
+	      args[i - 1] = arguments[i];
+	    }
+
+	    listeners.fn.apply(listeners.context, args);
+	  } else {
+	    var length = listeners.length
+	      , j;
+
+	    for (i = 0; i < length; i++) {
+	      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+	      switch (len) {
+	        case 1: listeners[i].fn.call(listeners[i].context); break;
+	        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+	        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+	        default:
+	          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+	            args[j - 1] = arguments[j];
+	          }
+
+	          listeners[i].fn.apply(listeners[i].context, args);
+	      }
+	    }
+	  }
+
+	  return true;
+	};
+
+	/**
+	 * Register a new EventListener for the given event.
+	 *
+	 * @param {String} event Name of the event.
+	 * @param {Function} fn Callback function.
+	 * @param {Mixed} [context=this] The context of the function.
+	 * @api public
+	 */
+	EventEmitter.prototype.on = function on(event, fn, context) {
+	  var listener = new EE(fn, context || this)
+	    , evt = prefix ? prefix + event : event;
+
+	  if (!this._events) this._events = prefix ? {} : Object.create(null);
+	  if (!this._events[evt]) this._events[evt] = listener;
+	  else {
+	    if (!this._events[evt].fn) this._events[evt].push(listener);
+	    else this._events[evt] = [
+	      this._events[evt], listener
+	    ];
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Add an EventListener that's only called once.
+	 *
+	 * @param {String} event Name of the event.
+	 * @param {Function} fn Callback function.
+	 * @param {Mixed} [context=this] The context of the function.
+	 * @api public
+	 */
+	EventEmitter.prototype.once = function once(event, fn, context) {
+	  var listener = new EE(fn, context || this, true)
+	    , evt = prefix ? prefix + event : event;
+
+	  if (!this._events) this._events = prefix ? {} : Object.create(null);
+	  if (!this._events[evt]) this._events[evt] = listener;
+	  else {
+	    if (!this._events[evt].fn) this._events[evt].push(listener);
+	    else this._events[evt] = [
+	      this._events[evt], listener
+	    ];
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Remove event listeners.
+	 *
+	 * @param {String} event The event we want to remove.
+	 * @param {Function} fn The listener that we need to find.
+	 * @param {Mixed} context Only remove listeners matching this context.
+	 * @param {Boolean} once Only remove once listeners.
+	 * @api public
+	 */
+	EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+	  var evt = prefix ? prefix + event : event;
+
+	  if (!this._events || !this._events[evt]) return this;
+
+	  var listeners = this._events[evt]
+	    , events = [];
+
+	  if (fn) {
+	    if (listeners.fn) {
+	      if (
+	           listeners.fn !== fn
+	        || (once && !listeners.once)
+	        || (context && listeners.context !== context)
+	      ) {
+	        events.push(listeners);
+	      }
+	    } else {
+	      for (var i = 0, length = listeners.length; i < length; i++) {
+	        if (
+	             listeners[i].fn !== fn
+	          || (once && !listeners[i].once)
+	          || (context && listeners[i].context !== context)
+	        ) {
+	          events.push(listeners[i]);
+	        }
+	      }
+	    }
+	  }
+
+	  //
+	  // Reset the array, or remove it completely if we have no more listeners.
+	  //
+	  if (events.length) {
+	    this._events[evt] = events.length === 1 ? events[0] : events;
+	  } else {
+	    delete this._events[evt];
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Remove all listeners or only the listeners for the specified event.
+	 *
+	 * @param {String} event The event want to remove all listeners for.
+	 * @api public
+	 */
+	EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+	  if (!this._events) return this;
+
+	  if (event) delete this._events[prefix ? prefix + event : event];
+	  else this._events = prefix ? {} : Object.create(null);
+
+	  return this;
+	};
+
+	//
+	// Alias methods names because people roll like that.
+	//
+	EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+	EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+	//
+	// This function doesn't apply anymore.
+	//
+	EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
+	  return this;
+	};
+
+	//
+	// Expose the prefix.
+	//
+	EventEmitter.prefixed = prefix;
+
+	//
+	// Expose the module.
+	//
+	if (true) {
+	  module.exports = EventEmitter;
+	}
+
+
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.staticJoinCreator = staticJoinCreator;
+	exports.instanceJoinCreator = instanceJoinCreator;
+
+	var _createStore = __webpack_require__(181);
+
+	var _utils = __webpack_require__(178);
+
+	var _ = _interopRequireWildcard(_utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/**
+	 * Internal module used to create static and instance join methods
+	 */
+
+	var slice = Array.prototype.slice,
+	    strategyMethodNames = {
+	    strict: "joinStrict",
+	    first: "joinLeading",
+	    last: "joinTrailing",
+	    all: "joinConcat"
+	};
+
+	/**
+	 * Used in `index.js` to create the static join methods
+	 * @param {String} strategy Which strategy to use when tracking listenable trigger arguments
+	 * @returns {Function} A static function which returns a store with a join listen on the given listenables using the given strategy
+	 */
+	function staticJoinCreator(strategy) {
+	    return function () /* listenables... */{
+	        var listenables = slice.call(arguments);
+	        return (0, _createStore.createStore)({
+	            init: function init() {
+	                this[strategyMethodNames[strategy]].apply(this, listenables.concat("triggerAsync"));
+	            }
+	        });
+	    };
+	}
+
+	/**
+	 * Used in `ListenerMethods.js` to create the instance join methods
+	 * @param {String} strategy Which strategy to use when tracking listenable trigger arguments
+	 * @returns {Function} An instance method which sets up a join listen on the given listenables using the given strategy
+	 */
+	function instanceJoinCreator(strategy) {
+	    return function () /* listenables..., callback*/{
+	        _.throwIf(arguments.length < 2, "Cannot create a join with less than 2 listenables!");
+	        var listenables = slice.call(arguments),
+	            callback = listenables.pop(),
+	            numberOfListenables = listenables.length,
+	            join = {
+	            numberOfListenables: numberOfListenables,
+	            callback: this[callback] || callback,
+	            listener: this,
+	            strategy: strategy
+	        },
+	            i,
+	            cancels = [],
+	            subobj;
+	        for (i = 0; i < numberOfListenables; i++) {
+	            _.throwIf(this.validateListening(listenables[i]));
+	        }
+	        for (i = 0; i < numberOfListenables; i++) {
+	            cancels.push(listenables[i].listen(newListener(i, join), this));
+	        }
+	        reset(join);
+	        subobj = { listenable: listenables };
+	        subobj.stop = makeStopper(subobj, cancels, this);
+	        this.subscriptions = (this.subscriptions || []).concat(subobj);
+	        return subobj;
+	    };
+	}
+
+	// ---- internal join functions ----
+
+	function makeStopper(subobj, cancels, context) {
+	    return function () {
+	        var i,
+	            subs = context.subscriptions,
+	            index = subs ? subs.indexOf(subobj) : -1;
+	        _.throwIf(index === -1, "Tried to remove join already gone from subscriptions list!");
+	        for (i = 0; i < cancels.length; i++) {
+	            cancels[i]();
+	        }
+	        subs.splice(index, 1);
+	    };
+	}
+
+	function reset(join) {
+	    join.listenablesEmitted = new Array(join.numberOfListenables);
+	    join.args = new Array(join.numberOfListenables);
+	}
+
+	function newListener(i, join) {
+	    return function () {
+	        var callargs = slice.call(arguments);
+	        if (join.listenablesEmitted[i]) {
+	            switch (join.strategy) {
+	                case "strict":
+	                    throw new Error("Strict join failed because listener triggered twice.");
+	                case "last":
+	                    join.args[i] = callargs;break;
+	                case "all":
+	                    join.args[i].push(callargs);
+	            }
+	        } else {
+	            join.listenablesEmitted[i] = true;
+	            join.args[i] = join.strategy === "all" ? [callargs] : callargs;
+	        }
+	        emitIfAllListenablesEmitted(join);
+	    };
+	}
+
+	function emitIfAllListenablesEmitted(join) {
+	    for (var i = 0; i < join.numberOfListenables; i++) {
+	        if (!join.listenablesEmitted[i]) {
+	            return;
+	        }
+	    }
+	    join.callback.apply(join.listener, join.args);
+	    reset(join);
+	}
+
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.createStore = createStore;
+
+	var _utils = __webpack_require__(178);
+
+	var _ = _interopRequireWildcard(_utils);
+
+	var _Keep = __webpack_require__(182);
+
+	var Keep = _interopRequireWildcard(_Keep);
+
+	var _mixer = __webpack_require__(183);
+
+	var _bindMethods = __webpack_require__(184);
+
+	var _StoreMethods = __webpack_require__(185);
+
+	var StoreMethods = _interopRequireWildcard(_StoreMethods);
+
+	var _PublisherMethods = __webpack_require__(186);
+
+	var PublisherMethods = _interopRequireWildcard(_PublisherMethods);
+
+	var _ListenerMethods = __webpack_require__(177);
+
+	var ListenerMethods = _interopRequireWildcard(_ListenerMethods);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var allowed = { preEmit: 1, shouldEmit: 1 };
+
+	/**
+	 * Creates an event emitting Data Store. It is mixed in with functions
+	 * from the `ListenerMethods` and `PublisherMethods` mixins. `preEmit`
+	 * and `shouldEmit` may be overridden in the definition object.
+	 *
+	 * @param {Object} definition The data store object definition
+	 * @returns {Store} A data store instance
+	 */
+	function createStore(definition) {
+
+	    definition = definition || {};
+
+	    for (var a in StoreMethods) {
+	        if (!allowed[a] && (PublisherMethods[a] || ListenerMethods[a])) {
+	            throw new Error("Cannot override API method " + a + " in Reflux.StoreMethods. Use another method name or override it on Reflux.PublisherMethods / Reflux.ListenerMethods instead.");
+	        }
+	    }
+
+	    for (var d in definition) {
+	        if (!allowed[d] && (PublisherMethods[d] || ListenerMethods[d])) {
+	            throw new Error("Cannot override API method " + d + " in store creation. Use another method name or override it on Reflux.PublisherMethods / Reflux.ListenerMethods instead.");
+	        }
+	    }
+
+	    definition = (0, _mixer.mix)(definition);
+
+	    function Store() {
+	        var i = 0,
+	            arr;
+	        this.subscriptions = [];
+	        this.emitter = new _.EventEmitter();
+	        this.eventLabel = "change";
+	        (0, _bindMethods.bindMethods)(this, definition);
+	        if (this.init && _.isFunction(this.init)) {
+	            this.init();
+	        }
+	        if (this.listenables) {
+	            arr = [].concat(this.listenables);
+	            for (; i < arr.length; i++) {
+	                this.listenToMany(arr[i]);
+	            }
+	        }
+	    }
+
+	    _.extend(Store.prototype, ListenerMethods, PublisherMethods, StoreMethods, definition);
+
+	    var store = new Store();
+	    Keep.addStore(store);
+
+	    return store;
+	}
+
+/***/ },
+/* 182 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	// this needs to be set to true before Keep.js starts storing, done via useKeep
+	var use = false;
+
+	var createdStores = [];
+
+	var createdActions = [];
+
+	function useKeep() {
+		var bool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+		use = bool;
+	}
+
+	function addStore(str) {
+		if (use) {
+			createdStores.push(str);
+		}
+	}
+
+	function addAction(act) {
+		if (use) {
+			createdActions.push(act);
+		}
+	}
+
+	function reset() {
+		while (createdStores.length) {
+			createdStores.pop();
+		}
+		while (createdActions.length) {
+			createdActions.pop();
+		}
+	}
+
+	exports.useKeep = useKeep;
+	exports.addStore = addStore;
+	exports.addAction = addAction;
+	exports.createdStores = createdStores;
+	exports.createdActions = createdActions;
+	exports.reset = reset;
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.mix = mix;
+
+	var _utils = __webpack_require__(178);
+
+	var _ = _interopRequireWildcard(_utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function mix(def) {
+	    var composed = {
+	        init: [],
+	        preEmit: [],
+	        shouldEmit: []
+	    };
+
+	    var updated = function mixDef(mixin) {
+	        var mixed = {};
+	        if (mixin.mixins) {
+	            mixin.mixins.forEach(function (subMixin) {
+	                _.extend(mixed, mixDef(subMixin));
+	            });
+	        }
+	        _.extend(mixed, mixin);
+	        Object.keys(composed).forEach(function (composable) {
+	            if (mixin.hasOwnProperty(composable)) {
+	                composed[composable].push(mixin[composable]);
+	            }
+	        });
+	        return mixed;
+	    }(def);
+
+	    if (composed.init.length > 1) {
+	        updated.init = function () {
+	            var args = arguments;
+	            composed.init.forEach(function (init) {
+	                init.apply(this, args);
+	            }, this);
+	        };
+	    }
+	    if (composed.preEmit.length > 1) {
+	        updated.preEmit = function () {
+	            return composed.preEmit.reduce(function (args, preEmit) {
+	                var newValue = preEmit.apply(this, args);
+	                return newValue === undefined ? args : [newValue];
+	            }.bind(this), arguments);
+	        };
+	    }
+	    if (composed.shouldEmit.length > 1) {
+	        updated.shouldEmit = function () {
+	            var args = arguments;
+	            return !composed.shouldEmit.some(function (shouldEmit) {
+	                return !shouldEmit.apply(this, args);
+	            }, this);
+	        };
+	    }
+	    Object.keys(composed).forEach(function (composable) {
+	        if (composed[composable].length === 1) {
+	            updated[composable] = composed[composable][0];
+	        }
+	    });
+
+	    return updated;
+	}
+
+/***/ },
+/* 184 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.bindMethods = bindMethods;
+	function bindMethods(store, definition) {
+	    for (var name in definition) {
+	        if (Object.getOwnPropertyDescriptor && Object.defineProperty) {
+	            var propertyDescriptor = Object.getOwnPropertyDescriptor(definition, name);
+
+	            if (!propertyDescriptor.value || typeof propertyDescriptor.value !== "function" || !definition.hasOwnProperty(name)) {
+	                continue;
+	            }
+
+	            store[name] = definition[name].bind(store);
+	        } else {
+	            var property = definition[name];
+
+	            if (typeof property !== "function" || !definition.hasOwnProperty(name)) {
+	                continue;
+	            }
+
+	            store[name] = property.bind(store);
+	        }
+	    }
+
+	    return store;
+	}
+
+/***/ },
+/* 185 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.deferWith = exports.triggerAsync = exports.trigger = exports.listen = exports.shouldEmit = exports.preEmit = undefined;
+
+	var _utils = __webpack_require__(178);
+
+	var _ = _interopRequireWildcard(_utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	/**
+	 * A module of methods for object that you want to be able to listen to.
+	 * This module is consumed by `createStore` and `createAction`
+	 */
+
+	/**
+	 * Hook used by the publisher that is invoked before emitting
+	 * and before `shouldEmit`. The arguments are the ones that the action
+	 * is invoked with. If this function returns something other than
+	 * undefined, that will be passed on as arguments for shouldEmit and
+	 * emission.
+	 */
+	var preEmit = exports.preEmit = function preEmit() {};
+
+	/**
+	 * Hook used by the publisher after `preEmit` to determine if the
+	 * event should be emitted with given arguments. This may be overridden
+	 * in your application, default implementation always returns true.
+	 *
+	 * @returns {Boolean} true if event should be emitted
+	 */
+	var shouldEmit = exports.shouldEmit = function shouldEmit() {
+	    return true;
+	};
+
+	/**
+	 * Subscribes the given callback for action triggered
+	 *
+	 * @param {Function} callback The callback to register as event handler
+	 * @param {Mixed} [optional] bindContext The context to bind the callback with
+	 * @returns {Function} Callback that unsubscribes the registered event handler
+	 */
+	var listen = exports.listen = function listen(callback, bindContext) {
+	    bindContext = bindContext || this;
+	    var eventHandler = function eventHandler(args) {
+	        if (aborted) {
+	            return;
+	        }
+	        callback.apply(bindContext, args);
+	    },
+	        me = this,
+	        aborted = false;
+	    this.emitter.addListener(this.eventLabel, eventHandler);
+	    return function () {
+	        aborted = true;
+	        me.emitter.removeListener(me.eventLabel, eventHandler);
+	    };
+	};
+
+	/**
+	 * Publishes an event using `this.emitter` (if `shouldEmit` agrees)
+	 */
+	var trigger = exports.trigger = function trigger() {
+	    var args = arguments,
+	        pre = this.preEmit.apply(this, args);
+	    args = pre === undefined ? args : _.isArguments(pre) ? pre : [].concat(pre);
+	    if (this.shouldEmit.apply(this, args)) {
+	        this.emitter.emit(this.eventLabel, args);
+	    }
+	};
+
+	/**
+	 * Tries to publish the event on the next tick
+	 */
+	var triggerAsync = exports.triggerAsync = function triggerAsync() {
+	    var args = arguments,
+	        me = this;
+	    _.nextTick(function () {
+	        me.trigger.apply(me, args);
+	    });
+	};
+
+	/**
+	 * Wraps the trigger mechanism with a deferral function.
+	 *
+	 * @param {Function} callback the deferral function,
+	 *        first argument is the resolving function and the
+	 *        rest are the arguments provided from the previous
+	 *        trigger invocation
+	 */
+	var deferWith = exports.deferWith = function deferWith(callback) {
+	    var oldTrigger = this.trigger,
+	        ctx = this,
+	        resolver = function resolver() {
+	        oldTrigger.apply(ctx, arguments);
+	    };
+	    this.trigger = function () {
+	        callback.apply(ctx, [resolver].concat([].splice.call(arguments, 0)));
+	    };
+	};
+
+/***/ },
+/* 187 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.createAction = createAction;
+
+	var _utils = __webpack_require__(178);
+
+	var _ = _interopRequireWildcard(_utils);
+
+	var _ActionMethods = __webpack_require__(176);
+
+	var ActionMethods = _interopRequireWildcard(_ActionMethods);
+
+	var _PublisherMethods = __webpack_require__(186);
+
+	var PublisherMethods = _interopRequireWildcard(_PublisherMethods);
+
+	var _Keep = __webpack_require__(182);
+
+	var Keep = _interopRequireWildcard(_Keep);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var allowed = { preEmit: 1, shouldEmit: 1 };
+
+	/**
+	 * Creates an action functor object. It is mixed in with functions
+	 * from the `PublisherMethods` mixin. `preEmit` and `shouldEmit` may
+	 * be overridden in the definition object.
+	 *
+	 * @param {Object} definition The action object definition
+	 */
+	function createAction(definition) {
+
+	    definition = definition || {};
+	    if (!_.isObject(definition)) {
+	        definition = { actionName: definition };
+	    }
+
+	    for (var a in ActionMethods) {
+	        if (!allowed[a] && PublisherMethods[a]) {
+	            throw new Error("Cannot override API method " + a + " in Reflux.ActionMethods. Use another method name or override it on Reflux.PublisherMethods instead.");
+	        }
+	    }
+
+	    for (var d in definition) {
+	        if (!allowed[d] && PublisherMethods[d]) {
+	            throw new Error("Cannot override API method " + d + " in action creation. Use another method name or override it on Reflux.PublisherMethods instead.");
+	        }
+	    }
+
+	    definition.children = definition.children || [];
+	    if (definition.asyncResult) {
+	        definition.children = definition.children.concat(["completed", "failed"]);
+	    }
+
+	    var i = 0,
+	        childActions = {};
+	    for (; i < definition.children.length; i++) {
+	        var chDef = definition.children[i];
+	        var chName = typeof chDef === "string" ? chDef : chDef.actionName;
+	        childActions[chName] = createAction(chDef);
+	    }
+
+	    var context = _.extend({
+	        eventLabel: "action",
+	        emitter: new _.EventEmitter(),
+	        _isAction: true
+	    }, PublisherMethods, ActionMethods, definition);
+
+	    var functor = function functor() {
+	        var hasChildActions = false;
+	        /* eslint no-unused-vars:0 */
+	        for (var ignore in functor.childActions) {
+	            hasChildActions = true;break;
+	        }
+	        var async = !functor.sync && typeof functor.sync !== "undefined" || hasChildActions;
+	        var triggerType = async ? "triggerAsync" : "trigger";
+	        return functor[triggerType].apply(functor, arguments);
+	    };
+
+	    _.extend(functor, childActions, context);
+
+	    Keep.addAction(functor);
+
+	    return functor;
+	}
+
+/***/ },
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ListenerMethods = __webpack_require__(177),
+	    ListenerMixin = __webpack_require__(189),
+	    _ = __webpack_require__(178);
+
+	module.exports = function(listenable, key) {
+
+	    _.throwIf(typeof(key) === 'undefined', 'Reflux.connect() requires a key.');
+
+	    return {
+	        getInitialState: function() {
+	            if (!_.isFunction(listenable.getInitialState)) {
+	                return {};
+	            }
+
+	            return _.object([key],[listenable.getInitialState()]);
+	        },
+	        componentDidMount: function() {
+	            var me = this;
+
+	            _.extend(me, ListenerMethods);
+
+	            this.listenTo(listenable, function(v) {
+	                me.setState(_.object([key],[v]));
+	            });
+	        },
+	        componentWillUnmount: ListenerMixin.componentWillUnmount
+	    };
+	};
+
+
+/***/ },
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(178),
+	    ListenerMethods = __webpack_require__(177);
+
+	/**
+	 * A module meant to be consumed as a mixin by a React component. Supplies the methods from
+	 * `ListenerMethods` mixin and takes care of teardown of subscriptions.
+	 * Note that if you're using the `connect` mixin you don't need this mixin, as connect will
+	 * import everything this mixin contains!
+	 */
+	module.exports = _.extend({
+
+	    /**
+	     * Cleans up all listener previously registered.
+	     */
+	    componentWillUnmount: ListenerMethods.stopListeningToAll
+
+	}, ListenerMethods);
+
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ListenerMethods = __webpack_require__(177),
+	    ListenerMixin = __webpack_require__(189),
+	    _ = __webpack_require__(178);
+
+	module.exports = function(listenable, key, filterFunc) {
+
+	    _.throwIf(_.isFunction(key), 'Reflux.connectFilter() requires a key.');
+
+	    return {
+	        getInitialState: function() {
+	            if (!_.isFunction(listenable.getInitialState)) {
+	                return {};
+	            }
+
+	            // Filter initial payload from store.
+	            var result = filterFunc.call(this, listenable.getInitialState());
+	            if (typeof(result) !== 'undefined') {
+	                return _.object([key], [result]);
+	            } else {
+	                return {};
+	            }
+	        },
+	        componentDidMount: function() {
+	            var me = this;
+
+	            _.extend(this, ListenerMethods);
+
+	            this.listenTo(listenable, function(value) {
+	                var result = filterFunc.call(me, value);
+	                me.setState(_.object([key], [result]));
+	            });
+	        },
+	        componentWillUnmount: ListenerMixin.componentWillUnmount
+	    };
+	};
+
+
+/***/ },
+/* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ListenerMethods = __webpack_require__(177);
+
+	/**
+	 * A mixin factory for a React component. Meant as a more convenient way of using the `ListenerMixin`,
+	 * without having to manually set listeners in the `componentDidMount` method.
+	 *
+	 * @param {Action|Store} listenable An Action or Store that should be
+	 *  listened to.
+	 * @param {Function|String} callback The callback to register as event handler
+	 * @param {Function|String} defaultCallback The callback to register as default handler
+	 * @returns {Object} An object to be used as a mixin, which sets up the listener for the given listenable.
+	 */
+	module.exports = function(listenable,callback,initial){
+	    return {
+	        /**
+	         * Set up the mixin before the initial rendering occurs. Import methods from `ListenerMethods`
+	         * and then make the call to `listenTo` with the arguments provided to the factory function
+	         */
+	        componentDidMount: function() {
+	            for(var m in ListenerMethods){
+	                if (this[m] !== ListenerMethods[m]){
+	                    if (this[m]){
+	                        throw "Can't have other property '"+m+"' when using Reflux.listenTo!";
+	                    }
+	                    this[m] = ListenerMethods[m];
+	                }
+	            }
+	            this.listenTo(listenable,callback,initial);
+	        },
+	        /**
+	         * Cleans up all listener previously registered.
+	         */
+	        componentWillUnmount: ListenerMethods.stopListeningToAll
+	    };
+	};
+
+
+/***/ },
+/* 192 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ListenerMethods = __webpack_require__(177);
+
+	/**
+	 * A mixin factory for a React component. Meant as a more convenient way of using the `listenerMixin`,
+	 * without having to manually set listeners in the `componentDidMount` method. This version is used
+	 * to automatically set up a `listenToMany` call.
+	 *
+	 * @param {Object} listenables An object of listenables
+	 * @returns {Object} An object to be used as a mixin, which sets up the listeners for the given listenables.
+	 */
+	module.exports = function(listenables){
+	    return {
+	        /**
+	         * Set up the mixin before the initial rendering occurs. Import methods from `ListenerMethods`
+	         * and then make the call to `listenTo` with the arguments provided to the factory function
+	         */
+	        componentDidMount: function() {
+	            for(var m in ListenerMethods){
+	                if (this[m] !== ListenerMethods[m]){
+	                    if (this[m]){
+	                        throw "Can't have other property '"+m+"' when using Reflux.listenToMany!";
+	                    }
+	                    this[m] = ListenerMethods[m];
+	                }
+	            }
+	            this.listenToMany(listenables);
+	        },
+	        /**
+	         * Cleans up all listener previously registered.
+	         */
+	        componentWillUnmount: ListenerMethods.stopListeningToAll
+	    };
+	};
+
+
+/***/ },
+/* 193 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/* globals React: false */
+
+	var Reflux = __webpack_require__(175);
+	Reflux.defineReact = __webpack_require__(194);
+
+	// useful utility for ES6 work, mimics the ability to extend
+	Reflux.utils.inherits = function(subClass, superClass) {
+		if (typeof superClass !== "function" && superClass !== null) {
+			throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+		}
+		subClass.prototype = Object.create(superClass && superClass.prototype, {
+			constructor: {
+				value: subClass,
+				enumerable: false,
+				writable: true,
+				configurable: true
+			}
+		});
+		if (superClass) {
+			if (Object.setPrototypeOf) {
+				Object.setPrototypeOf(subClass, superClass);
+			} else {
+				/* jshint proto: true */
+				subClass.__proto__ = superClass;
+			}
+		}
+	};
+
+	// first try to see if there's a global React var and use it
+	if (typeof React !== 'undefined' && React) {
+		Reflux.defineReact(React);
+	// otherwise we're gonna resort to 'try' stuff in case of other environments
+	} else {
+		try {
+			var R = __webpack_require__(1); // we ignore this in browserify manually (see grunt file), so it's more of a doublecheck for in node
+			Reflux.defineReact(R);
+		} catch (e) {}
+	}
+
+
+/***/ },
+/* 194 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* globals React: false */
+
+	var Reflux = __webpack_require__(175);
+
+	/**
+	 * Reflux.defineReact function where you can manually supply
+	 * the React object in order to create in case Reflux needs to load before
+	 * React or there is a modular environment where there won't be a global
+	 * React variable.
+	 * @note The third param is for internal usage only.
+	 */
+	var _react, _defined = false;
+	function defineReact(react, noLongerUsed, extend)
+	{
+		var proto, _extend;
+		
+		// if no Reflux object is yet available then return and just wait until defineReact is called manually with it
+		try {
+			_react  = react  || _react  || React;
+			_extend = extend || _react.Component;
+		} catch (e) {
+			return;
+		}
+		
+		// if Reflux and React aren't present then ignore, wait until they are properly present
+		// also ignore if it's been called before UNLESS there's manual extending happening
+		if (!_react || !_extend || (_defined && !extend)) {
+			return;
+		}
+		
+		// ----------- BEGIN Reflux.Component ------------
+		/**
+		 * Reflux.Component:
+		 * An implementation for idiomatic React.js classes that mix with
+		 * Reflux stores. To utilize extend Reflux.Component instead of
+		 * React.Component. Then you may hook any Reflux store that has a
+		 * `this.state` property containing its state values to the component
+		 * via `this.store` or an Array of Reflux stores via `this.stores` in
+		 * the component's constructor (similar to how you assign initial state
+		 * in the constructor in ES6 style React). The default values of the
+		 * stores will automatically reflect in the component's state, and any
+		 * further `trigger` calls from that store will update properties passed
+		 * in the trigger into the component automatically.
+		 */
+		var RefluxComponent = function(props, context, updater) {
+			_extend.call(this, props, context, updater);
+		};
+		
+		// equivalent of `extends React.Component` or other class if provided via `extend` param
+		Reflux.utils.inherits(RefluxComponent, _extend);
+		
+		proto = RefluxComponent.prototype;
+		
+		/**
+		 * this.storeKeys
+		 * When this is a falsey value (null by default) the component mixes in
+		 * all properties from the stores attached to it and updates on changes
+		 * from all of them. When set to an array of string keys it will only
+		 * utilized state property names of those keys in any store attached. This
+		 * lets you choose which parts of stores update the component on a component-
+		 * by-component basis. If using this it is best set in the constructor.
+		 */
+		proto.storeKeys = null;
+		
+		// on the mounting of the component that is where the store/stores are attached and initialized if needed
+		proto.componentWillMount = function () {
+			// if there is a this.store then simply push it onto the this.stores array or make one if needed
+			if (this.store) {
+				if (Array.isArray(this.stores)) {
+					this.stores.unshift(this.store);
+				} else {
+					this.stores = [this.store];
+				}
+			}
+			
+			if (this.stores) {
+				this.__storeunsubscribes__ = this.__storeunsubscribes__ || [];
+				var sS = this.setState.bind(this);
+				// this handles the triggering of a store, checking what's updated if proto.storeKeys is utilized
+				var onStoreTrigger = function(obj){
+					var updateObj = filterByStoreKeys(this.storeKeys, obj);
+					if (updateObj) {
+						sS(updateObj);
+					}
+				}.bind(this);
+				// for each store in this.stores...
+				for (var i = 0, ii = this.stores.length; i < ii; i++) {
+					var str = this.stores[i];
+					// if's a function then we know it's a class getting passed, not an instance
+					if (typeof str === 'function') {
+						var storeId = str.id;
+						// if there is NOT a .singleton property on the store then this store has not been initialized yet, so do so
+						if (!str.singleton) {
+							str.singleton = new str();
+							if (storeId) {
+								Reflux.stores[storeId] = str.singleton;
+							}
+						}
+						// before we weren't sure if we were working with an instance or class, so now we know an instance is created set it
+						// to the variables we were using so that we can just continue on knowing it's the instance we're working with
+						this.stores[i] = str = str.singleton;
+						// the instance should have an .id property as well if the class does, so set that here
+						str.id = storeId;
+						// if there is an id and there is a global state property for this store then merge
+						// the properties from that global state into the default state of the store AND then
+						// set the global state to that new state (since it may have previously been partial)
+						if (storeId && Reflux.GlobalState[storeId]) {
+							for (var key in Reflux.GlobalState[storeId]) {
+								str.state[key] = Reflux.GlobalState[storeId][key];
+							}
+							Reflux.GlobalState[storeId] = str.state;
+						// otherwise (if it has an id) set the global state to the default state of the store
+						} else if (storeId) {
+							Reflux.GlobalState[storeId] = str.state;
+						}
+						// if no id, then no messing with global state
+					}
+					// listen/subscribe for the ".trigger()" in the store, and track the unsubscribes so that we can unsubscribe on unmount
+					if (!Reflux.serverMode) {
+						this.__storeunsubscribes__.push(str.listen(onStoreTrigger));
+					}
+					// run set state so that it mixes in the props from the store with the component
+					var updateObj = filterByStoreKeys(this.storeKeys, str.state);
+					if (updateObj) {
+						this.setState(updateObj);
+					}
+				}
+			}
+			
+			// mapStoreToState needs to know if is ready to map or must wait
+			this.__readytomap__ = true;
+			// if there are mappings that were delayed, do them now
+			var dmaps = this.__delayedmaps__;
+			if (dmaps) {
+				for (var j=0,jj=dmaps.length; j<jj; j++) {
+					dmaps[j].func( dmaps[j].state );
+				}
+			}
+			this.__delayedmaps__ = null;
+		};
+		
+		// on the unmount phase of the component unsubscribe that which we subscribed earlier to keep our garbage trail clean
+		proto.componentWillUnmount = function () {
+			if (this.__storeunsubscribes__) {
+				for (var i = 0, ii = this.__storeunsubscribes__.length; i < ii; i++) {
+					this.__storeunsubscribes__[i]();
+				}
+			}
+			this.__readytomap__ = false;
+		};
+		
+		/**
+		 * this.mapStoreToState
+		 * This function allow you to supply map the state of a store to the
+		 * state of this component manually via your own logic. This method
+		 * is completely separate from this.store/this.stores and/or this.storeKeys.
+		 * Call this function with an ES6 store (class or singleton instance) as the
+		 * first argument and your filter function as the second. Your filter function
+		 * will receive an object of the parts of the ES6 store being updated every
+		 * time its setState is called. Your filter function then returns an object
+		 * which will be merged with the component state (IF it has any properties at all,
+		 * should you return a blank object the component will not rerender).
+		 */
+		proto.mapStoreToState = function(store, filterFunc)
+		{
+			// make sure we have a proper singleton instance to work with
+			if (typeof store === 'function') {
+				if (store.singleton) {
+					store = store.singleton;
+				} else {
+					store = Reflux.initStore(store);
+				}
+			}
+			
+			// we need a closure so that the called function can remember the proper filter function to use, so function gets defined here
+			var self = this;
+			function onMapStoreTrigger(obj) {
+				// get an object 
+				var update = filterFunc.call(self, obj);
+				// if no object returned from filter functions do nothing
+				if (!update) {
+					return;
+				}
+				// check if the update actually has any mapped props
+				/*jshint unused: false */
+				var hasProps = false;
+				for (var check in update) {
+					hasProps = true;
+					break;
+				}
+				// if there were props mapped, then update via setState
+				if (hasProps) {
+					self.setState(update);
+				}
+			}
+			
+			// add the listener to know when the store is triggered
+			this.__storeunsubscribes__ = this.__storeunsubscribes__ || [];
+			this.__storeunsubscribes__.push(store.listen(onMapStoreTrigger));
+			
+			// now actually run onMapStoreTrigger with the full store state so that we immediately have all store state mapped to component state
+			if (this.__readytomap__) {
+				onMapStoreTrigger(store.state);
+			} else {
+				this.__delayedmaps__ = this.__delayedmaps__ || [];
+				this.__delayedmaps__.push({func:onMapStoreTrigger, state:store.state});
+			}
+		};
+		
+		/**
+		 * Reflux.Component.extend(OtherClass)
+		 * This allows you to get classes that extend off of another React.Component
+		 * inheriting class. For example if you're using a third party that uses
+		 * components that allow `class MyComponent extends LibComponent` (where LibComponent
+		 * itself extends React.Component) and you want to use that component with ES6 then
+		 * you can make a class `var MyDualComponent = Reflux.Component.extend(LibComponent);`
+		 * then you can use `class MyComponent extends MyDualComponent` to get the benefits
+		 * of both libraries.
+		 */
+		RefluxComponent.extend = function(clss) {
+			return defineReact(null, null, clss);
+		};
+		
+		// if is being manually called with an `extend` argument present then just return the created class
+		if (extend) {
+			return RefluxComponent;
+		}
+		
+		// otherwise set as Reflux.Component and continue with other normal definitions
+		Reflux.Component = RefluxComponent;
+		
+		// also set Reflux.PureComponent (if it exists) using the .extend feature
+		if (_react.PureComponent) {
+			Reflux.PureComponent = RefluxComponent.extend(_react.PureComponent);
+		}
+		
+		// ------------ END Reflux.Component ------------
+		
+		// --------- BEGIN Reflux.Store ------------
+		/**
+		 * Reflux.Store:
+		 * Also implements optional Reflux.Store class that is idiomatic with
+		 * the React ES6 style. You extend Reflux.Store and then the rest works
+		 * the same as createStore, except the constructor instead of init, and
+		 * it holds state in a state property, and a .setState method is available
+		 * which automatically updates state and does a trigger. Then when using
+		 * with this.store or this.stores in an ES6 component just plass the class,
+		 * it will deal with a singleton instantiation of the class automatically.
+		 */
+		var RefluxStore = function() {
+			// extending doesn't really work well here, so instead we create an internal instance
+			// and just loop through its properties/methods and make a getter/setter for each
+			// that will actually be getting and setting on that internal instance.
+			this.__store__ = Reflux.createStore();
+			this.state = {};
+			var self = this;
+			for (var key in this.__store__) {
+				/*jshint loopfunc: true */
+				(function (prop) {
+					Object.defineProperty(self, prop, {
+						get: function () { return self.__store__[prop]; },
+						set: function (v) { self.__store__[prop] = v; }
+					});
+				})(key);
+			}
+		};
+		
+		proto = RefluxStore.prototype;
+		
+		// this defines the listenables property, mostly intended to be set as `this.listenables` in the constructor of the store
+		// it is essentially a shortcut to the `listenToMany` method
+		Object.defineProperty(proto, "listenables", {
+			get: function () {
+				return this.__listenables__;
+			},
+			set: function (v) {
+				var Combined = {};
+				if (Array.isArray(v)){
+					v.forEach(function(obj) {
+						for (var key in obj) {
+							Combined[key] = obj[key];
+						}
+					});
+				} else {
+					Combined = v;
+				}
+				this.__listenables__ = Combined;
+				this.listenToMany(Combined);
+			},
+			enumerable: true,
+			configurable: true
+		});
+		
+		// allows simple usage of `this.setState(obj)` within the store to both update the state and trigger the store to update
+		// components that it is attached to in a simple way that is idiomatic with React
+		proto.setState = function (obj) {
+			// Object.assign(this.state, obj); // later turn this to Object.assign and remove loop once support is good enough
+			for (var key in obj) {
+				this.state[key] = obj[key];
+			}
+			// if there's an id (i.e. it's being tracked by the global state) then make sure to update the global state
+			if (this.id) {
+				Reflux.GlobalState[this.id] = this.state;
+			}
+			// trigger, because any component it's attached to is listening and will merge the store state into its own on a store trigger
+			this.trigger(obj);
+		};
+		
+		// this is a static property so that other code can identify that this is a Reflux.Store class
+		// has issues specifically when using babel to transpile your ES6 stores for IE10 and below, not documented and shouldn't use yet
+		Object.defineProperty(RefluxStore, "isES6Store", {
+			get: function () {
+				return true;
+			},
+			enumerable: true,
+			configurable: true
+		});
+		
+		// allows a shortcut for accessing MyStore.singleton.state as MyStore.state (since common usage makes a singleton)
+		Object.defineProperty(RefluxStore, "state", {
+			get: function () {
+				if (!this.singleton) {
+					throw new Error('Reflux.Store.state is inaccessible before the store has been initialized.');
+				}
+				return this.singleton.state;
+			},
+			enumerable: true,
+			configurable: true
+		});
+		
+		/* NOTE:
+		If a Reflux.Store definition is given a static id property and used
+		properly within a Reflux.Component or with Reflux.initStore then
+		it will be added to the Reflux.GlobalState object which automatically tracks the
+		current state of all such defined stores in the program. */
+		
+		Reflux.Store = RefluxStore;
+		// ----------- END Reflux.Store -------------
+		
+		// --------- BEGIN Reflux Static Props/Methods ------------
+		/**
+		 * Reflux.GlobalState is where data is stored for any Reflux.Store that has a static id property. Each store's
+		 * state will be on the Reflux.GlobalState object with the id as the key. So a store with the id "MyStore" and
+		 * a state {"color":"red"} will end up with a Reflux.GlobalState of {"MyStore":{"color":"red"}}
+		 * Reflux.GlobalState is an accessible part of the API. However, keep in mind that non-primitive properties you
+		 * read off of it will continue to mutate and you can only manually mutate Reflux.GlobalState BEFORE any component
+		 * mounting of components with ES6 stores. For more functionality look to Reflux.setGlobalState to change the global
+		 * state at any point, and Reflux.getGlobalState to return a deep clone of the Reflux.GlobalState object which will
+		 * not continue to mutate as Reflux.GlobalState continues to mutate.
+		 */
+		Reflux.GlobalState = Reflux.GlobalState || {};
+		
+		/**
+		 * Reflux.stores
+		 * All initialized stores that have an id will have a reference to their singleton stored here with the key being the id.
+		 */
+		Reflux.stores = {};
+		
+		/**
+		 * Reflux.getGlobalState takes no arguments, and returns a deep clone of Reflux.GlobalState 
+		 * which will not continue to mutate as Reflux.GlobalState does. It can essentially store
+		 * snapshots of the global state as the program goes for saving or for in-app time travel.
+		 */
+		Reflux.getGlobalState = function() {
+			return clone(Reflux.GlobalState);
+		};
+		
+		/**
+		 * Reflux.setGlobalState takes one argument that is a representation of the a possible
+		 * global state. It updates all stores in the program to represent data in that given state.
+		 * This includes triggering those stores so that that state is represented in any Reflux.Component
+		 * instances they are attached to. Partial states may be given to it, and only the represented
+		 * stores/state values will be updated.
+		 */
+		Reflux.setGlobalState = function(obj) {
+			for (var storeID in obj) {
+				if (Reflux.stores[storeID]) {
+					Reflux.stores[storeID].setState(obj[storeID]);
+				} else {
+					Reflux.GlobalState[storeID] = obj[storeID];
+				}
+			}
+		};
+		
+		/**
+		 * Reflux.initStore takes one argument (a class that extends Reflux.Store) and returns a singleton
+		 * intance of that class. Its main functionality is to be able to mimic what happens to stores attached to
+		 * this.store or this.stores during the mounting phase of a component without having to actually attach the
+		 * store to a component in order to work properly with the global state.
+		 */
+		// Reflux.initializeGlobalStore is kept for backwards compatibility, but deprecated since the function is
+		// now for more broad instantiation of globally stored AND non-globally stored classes
+		Reflux.initializeGlobalStore = Reflux.initStore = function(str) {
+			var storeId = str.id;
+			// if they're initializing something twice then we're done already, return it
+			if (str.singleton) {
+				return str.singleton;
+			}
+			// if no id then it's easy: just make new instance and set to singleton
+			if (!storeId) {
+				str.singleton = new str();
+				return str.singleton;
+			}
+			// create the singleton and assign it to the class's singleton static property
+			var inst = str.singleton = new str();
+			// store it on the Reflux.stores array to be accessible later
+			Reflux.stores[storeId] = inst;
+			// the singleton instance itself should also have the id property of the class
+			inst.id = storeId;
+			// if the global state has something set for this id, copy it to the state and then
+			// make sure to set the global state to the end result, since it may have only been partial
+			if (Reflux.GlobalState[storeId]) {
+				for (var key in Reflux.GlobalState[storeId]) {
+					inst.state[key] = Reflux.GlobalState[storeId][key];
+				}
+				Reflux.GlobalState[storeId] = inst.state;
+			// otherwise just set the global state to the default state of the class
+			} else {
+				Reflux.GlobalState[storeId] = inst.state;
+			}
+			// returns the singleton itself, though it will also be accessible as as `MyClass.singleton`
+			return inst;
+		};
+		// --------- END Reflux Static Props/Methods ------------
+		
+		// so it knows not to redefine Reflux static stuff and stores if called again
+		_defined = true;
+	}
+
+	// filters a state object by storeKeys array (if it exists)
+	// if filtering and obj contains no properties to use, returns false to let the component know not to update
+	function filterByStoreKeys(storeKeys, obj)
+	{
+		// if there are not storeKeys defined then simply return the whole original object
+		if (!storeKeys) {
+			return obj;
+		}
+		// otherwise go through and only update properties that are in the storeKeys array, and return straight false if there are none
+		var doUpdate = false;
+		var updateObj = {};
+		for (var i = 0, ii = storeKeys.length; i < ii; i++) {
+			var prop = storeKeys[i];
+			if (obj.hasOwnProperty(prop)) {
+				doUpdate = true;
+				updateObj[prop] = obj[prop];
+			}
+		}
+		return doUpdate ? updateObj : false;
+	}
+
+	// this is utilized by some of the global state functionality in order to get a clone that will
+	// not continue to be modified as the GlobalState mutates
+	function clone(frm, to) {
+		if (frm === null || typeof frm !== "object") {
+			return frm;
+		}
+		if (frm.constructor !== Object && frm.constructor !== Array) {
+			return frm;
+		}
+		if (frm.constructor === Date || frm.constructor === RegExp || frm.constructor === Function ||
+			frm.constructor === String || frm.constructor === Number || frm.constructor === Boolean) {
+			return new frm.constructor(frm);
+		}
+		to = to || new frm.constructor();
+		for (var name in frm) {
+			to[name] = typeof to[name] === "undefined" ? clone(frm[name], null) : to[name];
+		}
+		return to;
+	}
+
+	module.exports = defineReact;
+
+
+
+/***/ },
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21439,7 +23539,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _shallowEqual = __webpack_require__(175);
+	var _shallowEqual = __webpack_require__(196);
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
@@ -21450,7 +23550,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 175 */
+/* 196 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21488,7 +23588,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 176 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21498,7 +23598,7 @@
 	});
 	exports.default = undefined;
 
-	var _google_map = __webpack_require__(177);
+	var _google_map = __webpack_require__(198);
 
 	var _google_map2 = _interopRequireDefault(_google_map);
 
@@ -21507,7 +23607,7 @@
 	exports.default = _google_map2.default;
 
 /***/ },
-/* 177 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -21528,67 +23628,67 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _shallowEqual = __webpack_require__(178);
+	var _shallowEqual = __webpack_require__(199);
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-	var _marker_dispatcher = __webpack_require__(179);
+	var _marker_dispatcher = __webpack_require__(200);
 
 	var _marker_dispatcher2 = _interopRequireDefault(_marker_dispatcher);
 
-	var _google_map_map = __webpack_require__(181);
+	var _google_map_map = __webpack_require__(201);
 
 	var _google_map_map2 = _interopRequireDefault(_google_map_map);
 
-	var _google_map_markers = __webpack_require__(182);
+	var _google_map_markers = __webpack_require__(202);
 
 	var _google_map_markers2 = _interopRequireDefault(_google_map_markers);
 
-	var _google_map_markers_prerender = __webpack_require__(184);
+	var _google_map_markers_prerender = __webpack_require__(204);
 
 	var _google_map_markers_prerender2 = _interopRequireDefault(_google_map_markers_prerender);
 
-	var _google_map_loader = __webpack_require__(185);
+	var _google_map_loader = __webpack_require__(205);
 
 	var _google_map_loader2 = _interopRequireDefault(_google_map_loader);
 
-	var _detect = __webpack_require__(187);
+	var _detect = __webpack_require__(207);
 
 	var _detect2 = _interopRequireDefault(_detect);
 
-	var _geo = __webpack_require__(188);
+	var _geo = __webpack_require__(208);
 
 	var _geo2 = _interopRequireDefault(_geo);
 
-	var _array_helper = __webpack_require__(193);
+	var _array_helper = __webpack_require__(213);
 
 	var _array_helper2 = _interopRequireDefault(_array_helper);
 
-	var _is_plain_object = __webpack_require__(194);
+	var _is_plain_object = __webpack_require__(214);
 
 	var _is_plain_object2 = _interopRequireDefault(_is_plain_object);
 
-	var _pick = __webpack_require__(195);
+	var _pick = __webpack_require__(215);
 
 	var _pick2 = _interopRequireDefault(_pick);
 
-	var _raf = __webpack_require__(196);
+	var _raf = __webpack_require__(216);
 
 	var _raf2 = _interopRequireDefault(_raf);
 
-	var _log = __webpack_require__(197);
+	var _log = __webpack_require__(217);
 
 	var _log2 = _interopRequireDefault(_log);
 
-	var _isNumber = __webpack_require__(198);
+	var _isNumber = __webpack_require__(218);
 
 	var _isNumber2 = _interopRequireDefault(_isNumber);
 
-	var _omit = __webpack_require__(183);
+	var _omit = __webpack_require__(203);
 
 	var _omit2 = _interopRequireDefault(_omit);
 
-	var _detectElementResize = __webpack_require__(199);
+	var _detectElementResize = __webpack_require__(219);
 
 	var _detectElementResize2 = _interopRequireDefault(_detectElementResize);
 
@@ -22561,7 +24661,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 178 */
+/* 199 */
 /***/ function(module, exports) {
 
 	/**
@@ -22633,7 +24733,7 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 179 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22644,7 +24744,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _eventemitter = __webpack_require__(180);
+	var _eventemitter = __webpack_require__(179);
 
 	var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
@@ -22697,302 +24797,7 @@
 	exports.default = MarkerDispatcher;
 
 /***/ },
-/* 180 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var has = Object.prototype.hasOwnProperty;
-
-	//
-	// We store our EE objects in a plain object whose properties are event names.
-	// If `Object.create(null)` is not supported we prefix the event names with a
-	// `~` to make sure that the built-in object properties are not overridden or
-	// used as an attack vector.
-	// We also assume that `Object.create(null)` is available when the event name
-	// is an ES6 Symbol.
-	//
-	var prefix = typeof Object.create !== 'function' ? '~' : false;
-
-	/**
-	 * Representation of a single EventEmitter function.
-	 *
-	 * @param {Function} fn Event handler to be called.
-	 * @param {Mixed} context Context for function execution.
-	 * @param {Boolean} [once=false] Only emit once
-	 * @api private
-	 */
-	function EE(fn, context, once) {
-	  this.fn = fn;
-	  this.context = context;
-	  this.once = once || false;
-	}
-
-	/**
-	 * Minimal EventEmitter interface that is molded against the Node.js
-	 * EventEmitter interface.
-	 *
-	 * @constructor
-	 * @api public
-	 */
-	function EventEmitter() { /* Nothing to set */ }
-
-	/**
-	 * Hold the assigned EventEmitters by name.
-	 *
-	 * @type {Object}
-	 * @private
-	 */
-	EventEmitter.prototype._events = undefined;
-
-	/**
-	 * Return an array listing the events for which the emitter has registered
-	 * listeners.
-	 *
-	 * @returns {Array}
-	 * @api public
-	 */
-	EventEmitter.prototype.eventNames = function eventNames() {
-	  var events = this._events
-	    , names = []
-	    , name;
-
-	  if (!events) return names;
-
-	  for (name in events) {
-	    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
-	  }
-
-	  if (Object.getOwnPropertySymbols) {
-	    return names.concat(Object.getOwnPropertySymbols(events));
-	  }
-
-	  return names;
-	};
-
-	/**
-	 * Return a list of assigned event listeners.
-	 *
-	 * @param {String} event The events that should be listed.
-	 * @param {Boolean} exists We only need to know if there are listeners.
-	 * @returns {Array|Boolean}
-	 * @api public
-	 */
-	EventEmitter.prototype.listeners = function listeners(event, exists) {
-	  var evt = prefix ? prefix + event : event
-	    , available = this._events && this._events[evt];
-
-	  if (exists) return !!available;
-	  if (!available) return [];
-	  if (available.fn) return [available.fn];
-
-	  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
-	    ee[i] = available[i].fn;
-	  }
-
-	  return ee;
-	};
-
-	/**
-	 * Emit an event to all registered event listeners.
-	 *
-	 * @param {String} event The name of the event.
-	 * @returns {Boolean} Indication if we've emitted an event.
-	 * @api public
-	 */
-	EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
-	  var evt = prefix ? prefix + event : event;
-
-	  if (!this._events || !this._events[evt]) return false;
-
-	  var listeners = this._events[evt]
-	    , len = arguments.length
-	    , args
-	    , i;
-
-	  if ('function' === typeof listeners.fn) {
-	    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
-
-	    switch (len) {
-	      case 1: return listeners.fn.call(listeners.context), true;
-	      case 2: return listeners.fn.call(listeners.context, a1), true;
-	      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
-	      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
-	      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
-	      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
-	    }
-
-	    for (i = 1, args = new Array(len -1); i < len; i++) {
-	      args[i - 1] = arguments[i];
-	    }
-
-	    listeners.fn.apply(listeners.context, args);
-	  } else {
-	    var length = listeners.length
-	      , j;
-
-	    for (i = 0; i < length; i++) {
-	      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
-
-	      switch (len) {
-	        case 1: listeners[i].fn.call(listeners[i].context); break;
-	        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
-	        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-	        default:
-	          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
-	            args[j - 1] = arguments[j];
-	          }
-
-	          listeners[i].fn.apply(listeners[i].context, args);
-	      }
-	    }
-	  }
-
-	  return true;
-	};
-
-	/**
-	 * Register a new EventListener for the given event.
-	 *
-	 * @param {String} event Name of the event.
-	 * @param {Function} fn Callback function.
-	 * @param {Mixed} [context=this] The context of the function.
-	 * @api public
-	 */
-	EventEmitter.prototype.on = function on(event, fn, context) {
-	  var listener = new EE(fn, context || this)
-	    , evt = prefix ? prefix + event : event;
-
-	  if (!this._events) this._events = prefix ? {} : Object.create(null);
-	  if (!this._events[evt]) this._events[evt] = listener;
-	  else {
-	    if (!this._events[evt].fn) this._events[evt].push(listener);
-	    else this._events[evt] = [
-	      this._events[evt], listener
-	    ];
-	  }
-
-	  return this;
-	};
-
-	/**
-	 * Add an EventListener that's only called once.
-	 *
-	 * @param {String} event Name of the event.
-	 * @param {Function} fn Callback function.
-	 * @param {Mixed} [context=this] The context of the function.
-	 * @api public
-	 */
-	EventEmitter.prototype.once = function once(event, fn, context) {
-	  var listener = new EE(fn, context || this, true)
-	    , evt = prefix ? prefix + event : event;
-
-	  if (!this._events) this._events = prefix ? {} : Object.create(null);
-	  if (!this._events[evt]) this._events[evt] = listener;
-	  else {
-	    if (!this._events[evt].fn) this._events[evt].push(listener);
-	    else this._events[evt] = [
-	      this._events[evt], listener
-	    ];
-	  }
-
-	  return this;
-	};
-
-	/**
-	 * Remove event listeners.
-	 *
-	 * @param {String} event The event we want to remove.
-	 * @param {Function} fn The listener that we need to find.
-	 * @param {Mixed} context Only remove listeners matching this context.
-	 * @param {Boolean} once Only remove once listeners.
-	 * @api public
-	 */
-	EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
-	  var evt = prefix ? prefix + event : event;
-
-	  if (!this._events || !this._events[evt]) return this;
-
-	  var listeners = this._events[evt]
-	    , events = [];
-
-	  if (fn) {
-	    if (listeners.fn) {
-	      if (
-	           listeners.fn !== fn
-	        || (once && !listeners.once)
-	        || (context && listeners.context !== context)
-	      ) {
-	        events.push(listeners);
-	      }
-	    } else {
-	      for (var i = 0, length = listeners.length; i < length; i++) {
-	        if (
-	             listeners[i].fn !== fn
-	          || (once && !listeners[i].once)
-	          || (context && listeners[i].context !== context)
-	        ) {
-	          events.push(listeners[i]);
-	        }
-	      }
-	    }
-	  }
-
-	  //
-	  // Reset the array, or remove it completely if we have no more listeners.
-	  //
-	  if (events.length) {
-	    this._events[evt] = events.length === 1 ? events[0] : events;
-	  } else {
-	    delete this._events[evt];
-	  }
-
-	  return this;
-	};
-
-	/**
-	 * Remove all listeners or only the listeners for the specified event.
-	 *
-	 * @param {String} event The event want to remove all listeners for.
-	 * @api public
-	 */
-	EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
-	  if (!this._events) return this;
-
-	  if (event) delete this._events[prefix ? prefix + event : event];
-	  else this._events = prefix ? {} : Object.create(null);
-
-	  return this;
-	};
-
-	//
-	// Alias methods names because people roll like that.
-	//
-	EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-	EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-	//
-	// This function doesn't apply anymore.
-	//
-	EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
-	  return this;
-	};
-
-	//
-	// Expose the prefix.
-	//
-	EventEmitter.prefixed = prefix;
-
-	//
-	// Expose the module.
-	//
-	if (true) {
-	  module.exports = EventEmitter;
-	}
-
-
-/***/ },
-/* 181 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23052,7 +24857,7 @@
 	exports.default = GoogleMapMap;
 
 /***/ },
-/* 182 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23069,11 +24874,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _shallowEqual = __webpack_require__(178);
+	var _shallowEqual = __webpack_require__(199);
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-	var _omit = __webpack_require__(183);
+	var _omit = __webpack_require__(203);
 
 	var _omit2 = _interopRequireDefault(_omit);
 
@@ -23385,7 +25190,7 @@
 	exports.default = GoogleMapMarkers;
 
 /***/ },
-/* 183 */
+/* 203 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -23412,7 +25217,7 @@
 	exports.default = omit;
 
 /***/ },
-/* 184 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23435,7 +25240,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _google_map_markers = __webpack_require__(182);
+	var _google_map_markers = __webpack_require__(202);
 
 	var _google_map_markers2 = _interopRequireDefault(_google_map_markers);
 
@@ -23453,7 +25258,7 @@
 	};
 
 /***/ },
-/* 185 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -23474,7 +25279,7 @@
 	// TODO add libraries language and other map options
 	function googleMapLoader(bootstrapURLKeys) {
 	  if (!$script_) {
-	    $script_ = __webpack_require__(186); // eslint-disable-line
+	    $script_ = __webpack_require__(206); // eslint-disable-line
 	  }
 
 	  // call from outside google-map-react
@@ -23531,7 +25336,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 186 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -23660,7 +25465,7 @@
 
 
 /***/ },
-/* 187 */
+/* 207 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23709,7 +25514,7 @@
 	}
 
 /***/ },
-/* 188 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23722,15 +25527,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _lat_lng = __webpack_require__(189);
+	var _lat_lng = __webpack_require__(209);
 
 	var _lat_lng2 = _interopRequireDefault(_lat_lng);
 
-	var _pointGeometry = __webpack_require__(191);
+	var _pointGeometry = __webpack_require__(211);
 
 	var _pointGeometry2 = _interopRequireDefault(_pointGeometry);
 
-	var _transform = __webpack_require__(192);
+	var _transform = __webpack_require__(212);
 
 	var _transform2 = _interopRequireDefault(_transform);
 
@@ -23868,7 +25673,7 @@
 	exports.default = Geo;
 
 /***/ },
-/* 189 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23879,7 +25684,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _wrap2 = __webpack_require__(190);
+	var _wrap2 = __webpack_require__(210);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -23923,7 +25728,7 @@
 	exports.default = LatLng;
 
 /***/ },
-/* 190 */
+/* 210 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -23938,7 +25743,7 @@
 	}
 
 /***/ },
-/* 191 */
+/* 211 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24075,7 +25880,7 @@
 
 
 /***/ },
-/* 192 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24086,15 +25891,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _lat_lng = __webpack_require__(189);
+	var _lat_lng = __webpack_require__(209);
 
 	var _lat_lng2 = _interopRequireDefault(_lat_lng);
 
-	var _pointGeometry = __webpack_require__(191);
+	var _pointGeometry = __webpack_require__(211);
 
 	var _pointGeometry2 = _interopRequireDefault(_pointGeometry);
 
-	var _wrap = __webpack_require__(190);
+	var _wrap = __webpack_require__(210);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24255,7 +26060,7 @@
 	exports.default = Transform;
 
 /***/ },
-/* 193 */
+/* 213 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24277,7 +26082,7 @@
 	}
 
 /***/ },
-/* 194 */
+/* 214 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24315,7 +26120,7 @@
 	}
 
 /***/ },
-/* 195 */
+/* 215 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24336,7 +26141,7 @@
 	}
 
 /***/ },
-/* 196 */
+/* 216 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24356,7 +26161,7 @@
 	}
 
 /***/ },
-/* 197 */
+/* 217 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24372,7 +26177,7 @@
 	exports.default = log2;
 
 /***/ },
-/* 198 */
+/* 218 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24397,7 +26202,7 @@
 	}
 
 /***/ },
-/* 199 */
+/* 219 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24575,7 +26380,7 @@
 	};
 
 /***/ },
-/* 200 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24590,11 +26395,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _function = __webpack_require__(174);
+	var _function = __webpack_require__(195);
 
 	var _function2 = _interopRequireDefault(_function);
 
-	var _pommesMarker_style = __webpack_require__(201);
+	var _pommesMarker_style = __webpack_require__(221);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24664,7 +26469,7 @@
 	PommesMarker.defaultProps = {};
 
 /***/ },
-/* 201 */
+/* 221 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24697,13 +26502,13 @@
 	exports.PommesMarkerStyle = PommesMarkerStyle;
 
 /***/ },
-/* 202 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -24712,11 +26517,13 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _function = __webpack_require__(174);
+	var _function = __webpack_require__(195);
 
 	var _function2 = _interopRequireDefault(_function);
 
-	var _placeMarker_style = __webpack_require__(203);
+	var _placeMarker_style = __webpack_require__(223);
+
+	var _ApiCalls = __webpack_require__(224);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24727,66 +26534,117 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var PlaceMarker = function (_Component) {
-	  _inherits(PlaceMarker, _Component);
+	    _inherits(PlaceMarker, _Component);
 
-	  _createClass(PlaceMarker, null, [{
-	    key: 'onEnter',
+	    _createClass(PlaceMarker, null, [{
+	        key: 'onEnter',
 
-	    /*eslint-disable */
-	    value: function onEnter(_ref) {
-	      var store = _ref.store,
-	          nextState = _ref.nextState,
-	          replaceState = _ref.replaceState,
-	          callback = _ref.callback;
+	        /*eslint-disable */
+	        value: function onEnter(_ref) {
+	            var store = _ref.store,
+	                nextState = _ref.nextState,
+	                replaceState = _ref.replaceState,
+	                callback = _ref.callback;
 
-	      // Load here any data.
-	      callback(); // this call is important, don't forget it
+	            // Load here any data.
+	            callback(); // this call is important, don't forget it
+	        }
+	        /*eslint-enable */
+
+	        // static propTypes = {
+	        //   text: PropTypes.string
+	        // };
+
+	        // static defaultProps = {};
+
+
+	    }]);
+
+	    function PlaceMarker(props) {
+	        _classCallCheck(this, PlaceMarker);
+
+	        var _this = _possibleConstructorReturn(this, (PlaceMarker.__proto__ || Object.getPrototypeOf(PlaceMarker)).call(this, props));
+
+	        _this.state = {
+	            "_id": {
+	                "$oid": "dummy123"
+	            },
+	            "pindex": '',
+	            "userId": "dummy123",
+	            "location": {
+	                "type": "Point",
+	                "coordinates": [_this.props.lat, _this.props.lng]
+	            }
+	        };
+
+	        _this.handleChange = _this.handleChange.bind(_this);
+	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+
+	        _this.shouldComponentUpdate = _function2.default;
+	        return _this;
 	    }
-	    /*eslint-enable */
 
-	    // static propTypes = {
-	    //   text: PropTypes.string
-	    // };
+	    _createClass(PlaceMarker, [{
+	        key: 'handleChange',
+	        value: function handleChange(event) {
+	            this.setState({
+	                "_id": {
+	                    "$oid": "dummy123"
+	                },
+	                "pindex": event.target.value,
+	                "userId": "2",
+	                "location": {
+	                    "type": "Point",
+	                    "coordinates": [this.props.lat, this.props.lng]
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'handleSubmit',
+	        value: function handleSubmit(event) {
 
-	    // static defaultProps = {};
+	            _ApiCalls.ApiCalls.postMarker(this.state);
 
+	            alert('A pommesindex was submitted: ' + this.state.value);
+	            event.preventDefault();
 
-	  }]);
+	            this.forceUpdate();
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                { style: _placeMarker_style.PlaceMarkerStyle },
+	                _react2.default.createElement(
+	                    'form',
+	                    { onSubmit: this.handleSubmit },
+	                    _react2.default.createElement(
+	                        'label',
+	                        null,
+	                        'Your Pommesindex:',
+	                        _react2.default.createElement('input', { type: 'text', value: this.state.value, onChange: this.handleChange })
+	                    ),
+	                    _react2.default.createElement('input', { type: 'submit', value: 'Submit' })
+	                )
+	            );
+	        }
+	    }]);
 
-	  function PlaceMarker(props) {
-	    _classCallCheck(this, PlaceMarker);
-
-	    var _this = _possibleConstructorReturn(this, (PlaceMarker.__proto__ || Object.getPrototypeOf(PlaceMarker)).call(this, props));
-
-	    _this.shouldComponentUpdate = _function2.default;
-	    return _this;
-	  }
-
-	  _createClass(PlaceMarker, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { style: _placeMarker_style.PlaceMarkerStyle },
-	        this.props.text
-	      );
-	    }
-	  }]);
-
-	  return PlaceMarker;
+	    return PlaceMarker;
 	}(_react.Component);
+
+	// PlaceMarker.propTypes = {
+	//   text: PropTypes.string
+	// };
+
+	// PlaceMarker.defaultProps = {};
+
 
 	exports.default = PlaceMarker;
 
-
-	PlaceMarker.propTypes = {
-	  text: _react.PropTypes.string
-	};
-
-	PlaceMarker.defaultProps = {};
-
 /***/ },
-/* 203 */
+/* 223 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24819,1939 +26677,38 @@
 	exports.PlaceMarkerStyle = PlaceMarkerStyle;
 
 /***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	/**
-	 * 
-	 */
-	var Reflux = __webpack_require__(205);
-
-	var MapActions = {
-	    init: Reflux.createAction(),
-	    getMoreMarkers: Reflux.createAction(),
-	    putPlaceOnMap: Reflux.createAction(),
-	    deletePlaceOnMap: Reflux.createAction()
-	};
-
-	module.exports = MapActions;
-
-/***/ },
-/* 205 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Reflux = __webpack_require__(206);
-
-	Reflux.serverMode = typeof window !== 'object';
-
-	Reflux.connect = __webpack_require__(218);
-
-	Reflux.connectFilter = __webpack_require__(220);
-
-	Reflux.ListenerMixin = __webpack_require__(219);
-
-	Reflux.listenTo = __webpack_require__(221);
-
-	Reflux.listenToMany = __webpack_require__(222);
-
-	__webpack_require__(223);
-
-	module.exports = Reflux;
-
-
-/***/ },
-/* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.__keep = exports.joinConcat = exports.joinStrict = exports.joinLeading = exports.all = exports.joinTrailing = exports.use = exports.nextTick = exports.setEventEmitter = exports.createActions = exports.createStore = exports.createAction = exports.utils = exports.StoreMethods = exports.PublisherMethods = exports.ListenerMethods = exports.ActionMethods = exports.version = undefined;
-
-	var _ActionMethods = __webpack_require__(207);
-
-	var ActionMethods = _interopRequireWildcard(_ActionMethods);
-
-	var _ListenerMethods = __webpack_require__(208);
-
-	var ListenerMethods = _interopRequireWildcard(_ListenerMethods);
-
-	var _PublisherMethods = __webpack_require__(216);
-
-	var PublisherMethods = _interopRequireWildcard(_PublisherMethods);
-
-	var _StoreMethods = __webpack_require__(215);
-
-	var StoreMethods = _interopRequireWildcard(_StoreMethods);
-
-	var _joins = __webpack_require__(210);
-
-	var _utils = __webpack_require__(209);
-
-	var _ = _interopRequireWildcard(_utils);
-
-	var _createAction = __webpack_require__(217);
-
-	var _createStore = __webpack_require__(211);
-
-	var _Keep = __webpack_require__(212);
-
-	var __keep = _interopRequireWildcard(_Keep);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var version = {
-	    "reflux-core": "1.0.0"
-	};
-
-	var joinTrailing = (0, _joins.staticJoinCreator)("last");
-	var all = joinTrailing; // Reflux.all alias for backward compatibility
-	var joinLeading = (0, _joins.staticJoinCreator)("first");
-	var joinStrict = (0, _joins.staticJoinCreator)("strict");
-	var joinConcat = (0, _joins.staticJoinCreator)("all");
-
-	var utils = _;
-
-
-	/**
-	 * Convenience function for creating a set of actions
-	 *
-	 * @param definitions the definitions for the actions to be created
-	 * @returns an object with actions of corresponding action names
-	 */
-	var createActions = function () {
-	    var reducer = function reducer(definitions, actions) {
-	        Object.keys(definitions).forEach(function (actionName) {
-	            var val = definitions[actionName];
-	            actions[actionName] = (0, _createAction.createAction)(val);
-	        });
-	    };
-
-	    return function (definitions) {
-	        var actions = {};
-	        if (definitions instanceof Array) {
-	            definitions.forEach(function (val) {
-	                if (_.isObject(val)) {
-	                    reducer(val, actions);
-	                } else {
-	                    actions[val] = (0, _createAction.createAction)(val);
-	                }
-	            });
-	        } else {
-	            reducer(definitions, actions);
-	        }
-	        return actions;
-	    };
-	}();
-
-	/**
-	 * Sets the eventmitter that Reflux uses
-	 */
-	function setEventEmitter(ctx) {
-	    _.EventEmitter = ctx;
-	}
-
-	/**
-	 * Sets the method used for deferring actions and stores
-	 */
-	function nextTick(nextTick) {
-	    _.nextTick = nextTick;
-	}
-
-	function use(pluginCb) {
-	    pluginCb(this);
-	}
-
-	/**
-	 * Provides the set of created actions and stores for introspection
-	 */
-	/*eslint-disable no-underscore-dangle*/
-
-
-	// export in format that supports syntax: var Reflux = require('reflux-core');
-	exports.version = version;
-	exports.ActionMethods = ActionMethods;
-	exports.ListenerMethods = ListenerMethods;
-	exports.PublisherMethods = PublisherMethods;
-	exports.StoreMethods = StoreMethods;
-	exports.utils = utils;
-	exports.createAction = _createAction.createAction;
-	exports.createStore = _createStore.createStore;
-	exports.createActions = createActions;
-	exports.setEventEmitter = setEventEmitter;
-	exports.nextTick = nextTick;
-	exports.use = use;
-	exports.joinTrailing = joinTrailing;
-	exports.all = all;
-	exports.joinLeading = joinLeading;
-	exports.joinStrict = joinStrict;
-	exports.joinConcat = joinConcat;
-	exports.__keep = __keep;
-	/*eslint-enable no-underscore-dangle*/
-
-	// export in format that supports syntax: import Reflux from 'reflux-core';
-
-	Object.defineProperty(exports, "default", {
-	    get: function get() {
-	        return exports;
-	    }
-	});
-
-	/**
-	 * Warn if Function.prototype.bind not available
-	 */
-	if (!Function.prototype.bind) {
-	    console.error("Function.prototype.bind not available. " + "ES5 shim required. " + "https://github.com/spoike/refluxjs#es5");
-	}
-
-/***/ },
-/* 207 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-/***/ },
-/* 208 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.joinStrict = exports.joinConcat = exports.joinLeading = exports.joinTrailing = exports.fetchInitialState = exports.stopListeningToAll = exports.stopListeningTo = exports.listenTo = exports.validateListening = exports.listenToMany = exports.hasListener = undefined;
-
-	var _utils = __webpack_require__(209);
-
-	var _ = _interopRequireWildcard(_utils);
-
-	var _joins = __webpack_require__(210);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	/**
-	 * Extract child listenables from a parent from their
-	 * children property and return them in a keyed Object
-	 *
-	 * @param {Object} listenable The parent listenable
-	 */
-	var mapChildListenables = function mapChildListenables(listenable) {
-	    var i = 0,
-	        children = {},
-	        childName;
-	    for (; i < (listenable.children || []).length; ++i) {
-	        childName = listenable.children[i];
-	        if (listenable[childName]) {
-	            children[childName] = listenable[childName];
-	        }
-	    }
-	    return children;
-	};
-
-	/**
-	 * Make a flat dictionary of all listenables including their
-	 * possible children (recursively), concatenating names in camelCase.
-	 *
-	 * @param {Object} listenables The top-level listenables
-	 */
-	var flattenListenables = function flattenListenables(listenables) {
-	    var flattened = {};
-	    for (var key in listenables) {
-	        var listenable = listenables[key];
-	        var childMap = mapChildListenables(listenable);
-
-	        // recursively flatten children
-	        var children = flattenListenables(childMap);
-
-	        // add the primary listenable and chilren
-	        flattened[key] = listenable;
-	        for (var childKey in children) {
-	            var childListenable = children[childKey];
-	            flattened[key + _.capitalize(childKey)] = childListenable;
-	        }
-	    }
-
-	    return flattened;
-	};
-
-	/**
-	 * An internal utility function used by `validateListening`
-	 *
-	 * @param {Action|Store} listenable The listenable we want to search for
-	 * @returns {Boolean} The result of a recursive search among `this.subscriptions`
-	 */
-	var hasListener = exports.hasListener = function hasListener(listenable) {
-	    var i = 0,
-	        j,
-	        listener,
-	        listenables;
-	    for (; i < (this.subscriptions || []).length; ++i) {
-	        listenables = [].concat(this.subscriptions[i].listenable);
-	        for (j = 0; j < listenables.length; j++) {
-	            listener = listenables[j];
-	            if (listener === listenable || listener.hasListener && listener.hasListener(listenable)) {
-	                return true;
-	            }
-	        }
-	    }
-	    return false;
-	};
-
-	/**
-	 * A convenience method that listens to all listenables in the given object.
-	 *
-	 * @param {Object} listenables An object of listenables. Keys will be used as callback method names.
-	 */
-	var listenToMany = exports.listenToMany = function listenToMany(listenables) {
-	    var allListenables = flattenListenables(listenables);
-	    for (var key in allListenables) {
-	        var cbname = _.callbackName(key),
-	            localname = this[cbname] ? cbname : this[key] ? key : undefined;
-	        if (localname) {
-	            this.listenTo(allListenables[key], localname, this[cbname + "Default"] || this[localname + "Default"] || localname);
-	        }
-	    }
-	};
-
-	/**
-	 * Checks if the current context can listen to the supplied listenable
-	 *
-	 * @param {Action|Store} listenable An Action or Store that should be
-	 *  listened to.
-	 * @returns {String|Undefined} An error message, or undefined if there was no problem.
-	 */
-	var validateListening = exports.validateListening = function validateListening(listenable) {
-	    if (listenable === this) {
-	        return "Listener is not able to listen to itself";
-	    }
-	    if (!_.isFunction(listenable.listen)) {
-	        return listenable + " is missing a listen method";
-	    }
-	    if (listenable.hasListener && listenable.hasListener(this)) {
-	        return "Listener cannot listen to this listenable because of circular loop";
-	    }
-	};
-
-	/**
-	 * Sets up a subscription to the given listenable for the context object
-	 *
-	 * @param {Action|Store} listenable An Action or Store that should be
-	 *  listened to.
-	 * @param {Function|String} callback The callback to register as event handler
-	 * @param {Function|String} defaultCallback The callback to register as default handler
-	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is the object being listened to
-	 */
-	var listenTo = exports.listenTo = function listenTo(listenable, callback, defaultCallback) {
-	    var desub,
-	        unsubscriber,
-	        subscriptionobj,
-	        subs = this.subscriptions = this.subscriptions || [];
-	    _.throwIf(this.validateListening(listenable));
-	    this.fetchInitialState(listenable, defaultCallback);
-	    desub = listenable.listen(this[callback] || callback, this);
-	    unsubscriber = function unsubscriber() {
-	        var index = subs.indexOf(subscriptionobj);
-	        _.throwIf(index === -1, "Tried to remove listen already gone from subscriptions list!");
-	        subs.splice(index, 1);
-	        desub();
-	    };
-	    subscriptionobj = {
-	        stop: unsubscriber,
-	        listenable: listenable
-	    };
-	    subs.push(subscriptionobj);
-	    return subscriptionobj;
-	};
-
-	/**
-	 * Stops listening to a single listenable
-	 *
-	 * @param {Action|Store} listenable The action or store we no longer want to listen to
-	 * @returns {Boolean} True if a subscription was found and removed, otherwise false.
-	 */
-	var stopListeningTo = exports.stopListeningTo = function stopListeningTo(listenable) {
-	    var sub,
-	        i = 0,
-	        subs = this.subscriptions || [];
-	    for (; i < subs.length; i++) {
-	        sub = subs[i];
-	        if (sub.listenable === listenable) {
-	            sub.stop();
-	            _.throwIf(subs.indexOf(sub) !== -1, "Failed to remove listen from subscriptions list!");
-	            return true;
-	        }
-	    }
-	    return false;
-	};
-
-	/**
-	 * Stops all subscriptions and empties subscriptions array
-	 */
-	var stopListeningToAll = exports.stopListeningToAll = function stopListeningToAll() {
-	    var remaining,
-	        subs = this.subscriptions || [];
-	    while (remaining = subs.length) {
-	        subs[0].stop();
-	        _.throwIf(subs.length !== remaining - 1, "Failed to remove listen from subscriptions list!");
-	    }
-	};
-
-	/**
-	 * Used in `listenTo`. Fetches initial data from a publisher if it has a `getInitialState` method.
-	 * @param {Action|Store} listenable The publisher we want to get initial state from
-	 * @param {Function|String} defaultCallback The method to receive the data
-	 */
-	var fetchInitialState = exports.fetchInitialState = function fetchInitialState(listenable, defaultCallback) {
-	    defaultCallback = defaultCallback && this[defaultCallback] || defaultCallback;
-	    var me = this;
-	    if (_.isFunction(defaultCallback) && _.isFunction(listenable.getInitialState)) {
-	        var data = listenable.getInitialState();
-	        if (data && _.isFunction(data.then)) {
-	            data.then(function () {
-	                defaultCallback.apply(me, arguments);
-	            });
-	        } else {
-	            defaultCallback.call(this, data);
-	        }
-	    }
-	};
-
-	/**
-	 * The callback will be called once all listenables have triggered at least once.
-	 * It will be invoked with the last emission from each listenable.
-	 * @param {...Publishers} publishers Publishers that should be tracked.
-	 * @param {Function|String} callback The method to call when all publishers have emitted
-	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is an array of listenables
-	 */
-	var joinTrailing = exports.joinTrailing = (0, _joins.instanceJoinCreator)("last");
-
-	/**
-	 * The callback will be called once all listenables have triggered at least once.
-	 * It will be invoked with the first emission from each listenable.
-	 * @param {...Publishers} publishers Publishers that should be tracked.
-	 * @param {Function|String} callback The method to call when all publishers have emitted
-	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is an array of listenables
-	 */
-	var joinLeading = exports.joinLeading = (0, _joins.instanceJoinCreator)("first");
-
-	/**
-	 * The callback will be called once all listenables have triggered at least once.
-	 * It will be invoked with all emission from each listenable.
-	 * @param {...Publishers} publishers Publishers that should be tracked.
-	 * @param {Function|String} callback The method to call when all publishers have emitted
-	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is an array of listenables
-	 */
-	var joinConcat = exports.joinConcat = (0, _joins.instanceJoinCreator)("all");
-
-	/**
-	 * The callback will be called once all listenables have triggered.
-	 * If a callback triggers twice before that happens, an error is thrown.
-	 * @param {...Publishers} publishers Publishers that should be tracked.
-	 * @param {Function|String} callback The method to call when all publishers have emitted
-	 * @returns {Object} A subscription obj where `stop` is an unsub function and `listenable` is an array of listenables
-	 */
-	var joinStrict = exports.joinStrict = (0, _joins.instanceJoinCreator)("strict");
-
-/***/ },
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-	exports.capitalize = capitalize;
-	exports.callbackName = callbackName;
-	exports.isObject = isObject;
-	exports.extend = extend;
-	exports.isFunction = isFunction;
-	exports.nextTick = nextTick;
-	exports.object = object;
-	exports.isArguments = isArguments;
-	exports.throwIf = throwIf;
-	function capitalize(string) {
-	    return string.charAt(0).toUpperCase() + string.slice(1);
-	}
-
-	function callbackName(string, prefix) {
-	    prefix = prefix || "on";
-	    return prefix + exports.capitalize(string);
-	}
-
-	/*
-	 * isObject, extend, isFunction, isArguments are taken from underscore/lodash in
-	 * order to remove the dependency
-	 */
-	function isObject(obj) {
-	    var type = typeof obj === "undefined" ? "undefined" : _typeof(obj);
-	    return type === "function" || type === "object" && !!obj;
-	}
-
-	function extend(obj) {
-	    if (!isObject(obj)) {
-	        return obj;
-	    }
-	    var source, keys, prop;
-	    for (var i = 1, length = arguments.length; i < length; i++) {
-	        source = arguments[i];
-	        keys = Object.keys(source);
-	        for (var j = 0; j < keys.length; j++) {
-	            prop = keys[j];
-	            if (Object.getOwnPropertyDescriptor && Object.defineProperty) {
-	                var propertyDescriptor = Object.getOwnPropertyDescriptor(source, prop);
-	                Object.defineProperty(obj, prop, propertyDescriptor);
-	            } else {
-	                obj[prop] = source[prop];
-	            }
-	        }
-	    }
-	    return obj;
-	}
-
-	function isFunction(value) {
-	    return typeof value === "function";
-	}
-
-	exports.EventEmitter = __webpack_require__(180);
-
-	function nextTick(callback) {
-	    setTimeout(callback, 0);
-	}
-
-	function object(keys, vals) {
-	    var o = {},
-	        i = 0;
-	    for (; i < keys.length; i++) {
-	        o[keys[i]] = vals[i];
-	    }
-	    return o;
-	}
-
-	function isArguments(value) {
-	    return (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" && "callee" in value && typeof value.length === "number";
-	}
-
-	function throwIf(val, msg) {
-	    if (val) {
-	        throw Error(msg || val);
-	    }
-	}
-
-/***/ },
-/* 210 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.staticJoinCreator = staticJoinCreator;
-	exports.instanceJoinCreator = instanceJoinCreator;
-
-	var _createStore = __webpack_require__(211);
-
-	var _utils = __webpack_require__(209);
-
-	var _ = _interopRequireWildcard(_utils);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	/**
-	 * Internal module used to create static and instance join methods
-	 */
-
-	var slice = Array.prototype.slice,
-	    strategyMethodNames = {
-	    strict: "joinStrict",
-	    first: "joinLeading",
-	    last: "joinTrailing",
-	    all: "joinConcat"
-	};
-
-	/**
-	 * Used in `index.js` to create the static join methods
-	 * @param {String} strategy Which strategy to use when tracking listenable trigger arguments
-	 * @returns {Function} A static function which returns a store with a join listen on the given listenables using the given strategy
-	 */
-	function staticJoinCreator(strategy) {
-	    return function () /* listenables... */{
-	        var listenables = slice.call(arguments);
-	        return (0, _createStore.createStore)({
-	            init: function init() {
-	                this[strategyMethodNames[strategy]].apply(this, listenables.concat("triggerAsync"));
-	            }
-	        });
-	    };
-	}
-
-	/**
-	 * Used in `ListenerMethods.js` to create the instance join methods
-	 * @param {String} strategy Which strategy to use when tracking listenable trigger arguments
-	 * @returns {Function} An instance method which sets up a join listen on the given listenables using the given strategy
-	 */
-	function instanceJoinCreator(strategy) {
-	    return function () /* listenables..., callback*/{
-	        _.throwIf(arguments.length < 2, "Cannot create a join with less than 2 listenables!");
-	        var listenables = slice.call(arguments),
-	            callback = listenables.pop(),
-	            numberOfListenables = listenables.length,
-	            join = {
-	            numberOfListenables: numberOfListenables,
-	            callback: this[callback] || callback,
-	            listener: this,
-	            strategy: strategy
-	        },
-	            i,
-	            cancels = [],
-	            subobj;
-	        for (i = 0; i < numberOfListenables; i++) {
-	            _.throwIf(this.validateListening(listenables[i]));
-	        }
-	        for (i = 0; i < numberOfListenables; i++) {
-	            cancels.push(listenables[i].listen(newListener(i, join), this));
-	        }
-	        reset(join);
-	        subobj = { listenable: listenables };
-	        subobj.stop = makeStopper(subobj, cancels, this);
-	        this.subscriptions = (this.subscriptions || []).concat(subobj);
-	        return subobj;
-	    };
-	}
-
-	// ---- internal join functions ----
-
-	function makeStopper(subobj, cancels, context) {
-	    return function () {
-	        var i,
-	            subs = context.subscriptions,
-	            index = subs ? subs.indexOf(subobj) : -1;
-	        _.throwIf(index === -1, "Tried to remove join already gone from subscriptions list!");
-	        for (i = 0; i < cancels.length; i++) {
-	            cancels[i]();
-	        }
-	        subs.splice(index, 1);
-	    };
-	}
-
-	function reset(join) {
-	    join.listenablesEmitted = new Array(join.numberOfListenables);
-	    join.args = new Array(join.numberOfListenables);
-	}
-
-	function newListener(i, join) {
-	    return function () {
-	        var callargs = slice.call(arguments);
-	        if (join.listenablesEmitted[i]) {
-	            switch (join.strategy) {
-	                case "strict":
-	                    throw new Error("Strict join failed because listener triggered twice.");
-	                case "last":
-	                    join.args[i] = callargs;break;
-	                case "all":
-	                    join.args[i].push(callargs);
-	            }
-	        } else {
-	            join.listenablesEmitted[i] = true;
-	            join.args[i] = join.strategy === "all" ? [callargs] : callargs;
-	        }
-	        emitIfAllListenablesEmitted(join);
-	    };
-	}
-
-	function emitIfAllListenablesEmitted(join) {
-	    for (var i = 0; i < join.numberOfListenables; i++) {
-	        if (!join.listenablesEmitted[i]) {
-	            return;
-	        }
-	    }
-	    join.callback.apply(join.listener, join.args);
-	    reset(join);
-	}
-
-/***/ },
-/* 211 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.createStore = createStore;
-
-	var _utils = __webpack_require__(209);
-
-	var _ = _interopRequireWildcard(_utils);
-
-	var _Keep = __webpack_require__(212);
-
-	var Keep = _interopRequireWildcard(_Keep);
-
-	var _mixer = __webpack_require__(213);
-
-	var _bindMethods = __webpack_require__(214);
-
-	var _StoreMethods = __webpack_require__(215);
-
-	var StoreMethods = _interopRequireWildcard(_StoreMethods);
-
-	var _PublisherMethods = __webpack_require__(216);
-
-	var PublisherMethods = _interopRequireWildcard(_PublisherMethods);
-
-	var _ListenerMethods = __webpack_require__(208);
-
-	var ListenerMethods = _interopRequireWildcard(_ListenerMethods);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var allowed = { preEmit: 1, shouldEmit: 1 };
-
-	/**
-	 * Creates an event emitting Data Store. It is mixed in with functions
-	 * from the `ListenerMethods` and `PublisherMethods` mixins. `preEmit`
-	 * and `shouldEmit` may be overridden in the definition object.
-	 *
-	 * @param {Object} definition The data store object definition
-	 * @returns {Store} A data store instance
-	 */
-	function createStore(definition) {
-
-	    definition = definition || {};
-
-	    for (var a in StoreMethods) {
-	        if (!allowed[a] && (PublisherMethods[a] || ListenerMethods[a])) {
-	            throw new Error("Cannot override API method " + a + " in Reflux.StoreMethods. Use another method name or override it on Reflux.PublisherMethods / Reflux.ListenerMethods instead.");
-	        }
-	    }
-
-	    for (var d in definition) {
-	        if (!allowed[d] && (PublisherMethods[d] || ListenerMethods[d])) {
-	            throw new Error("Cannot override API method " + d + " in store creation. Use another method name or override it on Reflux.PublisherMethods / Reflux.ListenerMethods instead.");
-	        }
-	    }
-
-	    definition = (0, _mixer.mix)(definition);
-
-	    function Store() {
-	        var i = 0,
-	            arr;
-	        this.subscriptions = [];
-	        this.emitter = new _.EventEmitter();
-	        this.eventLabel = "change";
-	        (0, _bindMethods.bindMethods)(this, definition);
-	        if (this.init && _.isFunction(this.init)) {
-	            this.init();
-	        }
-	        if (this.listenables) {
-	            arr = [].concat(this.listenables);
-	            for (; i < arr.length; i++) {
-	                this.listenToMany(arr[i]);
-	            }
-	        }
-	    }
-
-	    _.extend(Store.prototype, ListenerMethods, PublisherMethods, StoreMethods, definition);
-
-	    var store = new Store();
-	    Keep.addStore(store);
-
-	    return store;
-	}
-
-/***/ },
-/* 212 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	// this needs to be set to true before Keep.js starts storing, done via useKeep
-	var use = false;
-
-	var createdStores = [];
-
-	var createdActions = [];
-
-	function useKeep() {
-		var bool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
-		use = bool;
-	}
-
-	function addStore(str) {
-		if (use) {
-			createdStores.push(str);
-		}
-	}
-
-	function addAction(act) {
-		if (use) {
-			createdActions.push(act);
-		}
-	}
-
-	function reset() {
-		while (createdStores.length) {
-			createdStores.pop();
-		}
-		while (createdActions.length) {
-			createdActions.pop();
-		}
-	}
-
-	exports.useKeep = useKeep;
-	exports.addStore = addStore;
-	exports.addAction = addAction;
-	exports.createdStores = createdStores;
-	exports.createdActions = createdActions;
-	exports.reset = reset;
-
-/***/ },
-/* 213 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.mix = mix;
-
-	var _utils = __webpack_require__(209);
-
-	var _ = _interopRequireWildcard(_utils);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function mix(def) {
-	    var composed = {
-	        init: [],
-	        preEmit: [],
-	        shouldEmit: []
-	    };
-
-	    var updated = function mixDef(mixin) {
-	        var mixed = {};
-	        if (mixin.mixins) {
-	            mixin.mixins.forEach(function (subMixin) {
-	                _.extend(mixed, mixDef(subMixin));
-	            });
-	        }
-	        _.extend(mixed, mixin);
-	        Object.keys(composed).forEach(function (composable) {
-	            if (mixin.hasOwnProperty(composable)) {
-	                composed[composable].push(mixin[composable]);
-	            }
-	        });
-	        return mixed;
-	    }(def);
-
-	    if (composed.init.length > 1) {
-	        updated.init = function () {
-	            var args = arguments;
-	            composed.init.forEach(function (init) {
-	                init.apply(this, args);
-	            }, this);
-	        };
-	    }
-	    if (composed.preEmit.length > 1) {
-	        updated.preEmit = function () {
-	            return composed.preEmit.reduce(function (args, preEmit) {
-	                var newValue = preEmit.apply(this, args);
-	                return newValue === undefined ? args : [newValue];
-	            }.bind(this), arguments);
-	        };
-	    }
-	    if (composed.shouldEmit.length > 1) {
-	        updated.shouldEmit = function () {
-	            var args = arguments;
-	            return !composed.shouldEmit.some(function (shouldEmit) {
-	                return !shouldEmit.apply(this, args);
-	            }, this);
-	        };
-	    }
-	    Object.keys(composed).forEach(function (composable) {
-	        if (composed[composable].length === 1) {
-	            updated[composable] = composed[composable][0];
-	        }
-	    });
-
-	    return updated;
-	}
-
-/***/ },
-/* 214 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.bindMethods = bindMethods;
-	function bindMethods(store, definition) {
-	    for (var name in definition) {
-	        if (Object.getOwnPropertyDescriptor && Object.defineProperty) {
-	            var propertyDescriptor = Object.getOwnPropertyDescriptor(definition, name);
-
-	            if (!propertyDescriptor.value || typeof propertyDescriptor.value !== "function" || !definition.hasOwnProperty(name)) {
-	                continue;
-	            }
-
-	            store[name] = definition[name].bind(store);
-	        } else {
-	            var property = definition[name];
-
-	            if (typeof property !== "function" || !definition.hasOwnProperty(name)) {
-	                continue;
-	            }
-
-	            store[name] = property.bind(store);
-	        }
-	    }
-
-	    return store;
-	}
-
-/***/ },
-/* 215 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-/***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.deferWith = exports.triggerAsync = exports.trigger = exports.listen = exports.shouldEmit = exports.preEmit = undefined;
-
-	var _utils = __webpack_require__(209);
-
-	var _ = _interopRequireWildcard(_utils);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	/**
-	 * A module of methods for object that you want to be able to listen to.
-	 * This module is consumed by `createStore` and `createAction`
-	 */
-
-	/**
-	 * Hook used by the publisher that is invoked before emitting
-	 * and before `shouldEmit`. The arguments are the ones that the action
-	 * is invoked with. If this function returns something other than
-	 * undefined, that will be passed on as arguments for shouldEmit and
-	 * emission.
-	 */
-	var preEmit = exports.preEmit = function preEmit() {};
-
-	/**
-	 * Hook used by the publisher after `preEmit` to determine if the
-	 * event should be emitted with given arguments. This may be overridden
-	 * in your application, default implementation always returns true.
-	 *
-	 * @returns {Boolean} true if event should be emitted
-	 */
-	var shouldEmit = exports.shouldEmit = function shouldEmit() {
-	    return true;
-	};
-
-	/**
-	 * Subscribes the given callback for action triggered
-	 *
-	 * @param {Function} callback The callback to register as event handler
-	 * @param {Mixed} [optional] bindContext The context to bind the callback with
-	 * @returns {Function} Callback that unsubscribes the registered event handler
-	 */
-	var listen = exports.listen = function listen(callback, bindContext) {
-	    bindContext = bindContext || this;
-	    var eventHandler = function eventHandler(args) {
-	        if (aborted) {
-	            return;
-	        }
-	        callback.apply(bindContext, args);
-	    },
-	        me = this,
-	        aborted = false;
-	    this.emitter.addListener(this.eventLabel, eventHandler);
-	    return function () {
-	        aborted = true;
-	        me.emitter.removeListener(me.eventLabel, eventHandler);
-	    };
-	};
-
-	/**
-	 * Publishes an event using `this.emitter` (if `shouldEmit` agrees)
-	 */
-	var trigger = exports.trigger = function trigger() {
-	    var args = arguments,
-	        pre = this.preEmit.apply(this, args);
-	    args = pre === undefined ? args : _.isArguments(pre) ? pre : [].concat(pre);
-	    if (this.shouldEmit.apply(this, args)) {
-	        this.emitter.emit(this.eventLabel, args);
-	    }
-	};
-
-	/**
-	 * Tries to publish the event on the next tick
-	 */
-	var triggerAsync = exports.triggerAsync = function triggerAsync() {
-	    var args = arguments,
-	        me = this;
-	    _.nextTick(function () {
-	        me.trigger.apply(me, args);
-	    });
-	};
-
-	/**
-	 * Wraps the trigger mechanism with a deferral function.
-	 *
-	 * @param {Function} callback the deferral function,
-	 *        first argument is the resolving function and the
-	 *        rest are the arguments provided from the previous
-	 *        trigger invocation
-	 */
-	var deferWith = exports.deferWith = function deferWith(callback) {
-	    var oldTrigger = this.trigger,
-	        ctx = this,
-	        resolver = function resolver() {
-	        oldTrigger.apply(ctx, arguments);
-	    };
-	    this.trigger = function () {
-	        callback.apply(ctx, [resolver].concat([].splice.call(arguments, 0)));
-	    };
-	};
-
-/***/ },
-/* 217 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.createAction = createAction;
-
-	var _utils = __webpack_require__(209);
-
-	var _ = _interopRequireWildcard(_utils);
-
-	var _ActionMethods = __webpack_require__(207);
-
-	var ActionMethods = _interopRequireWildcard(_ActionMethods);
-
-	var _PublisherMethods = __webpack_require__(216);
-
-	var PublisherMethods = _interopRequireWildcard(_PublisherMethods);
-
-	var _Keep = __webpack_require__(212);
-
-	var Keep = _interopRequireWildcard(_Keep);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var allowed = { preEmit: 1, shouldEmit: 1 };
-
-	/**
-	 * Creates an action functor object. It is mixed in with functions
-	 * from the `PublisherMethods` mixin. `preEmit` and `shouldEmit` may
-	 * be overridden in the definition object.
-	 *
-	 * @param {Object} definition The action object definition
-	 */
-	function createAction(definition) {
-
-	    definition = definition || {};
-	    if (!_.isObject(definition)) {
-	        definition = { actionName: definition };
-	    }
-
-	    for (var a in ActionMethods) {
-	        if (!allowed[a] && PublisherMethods[a]) {
-	            throw new Error("Cannot override API method " + a + " in Reflux.ActionMethods. Use another method name or override it on Reflux.PublisherMethods instead.");
-	        }
-	    }
-
-	    for (var d in definition) {
-	        if (!allowed[d] && PublisherMethods[d]) {
-	            throw new Error("Cannot override API method " + d + " in action creation. Use another method name or override it on Reflux.PublisherMethods instead.");
-	        }
-	    }
-
-	    definition.children = definition.children || [];
-	    if (definition.asyncResult) {
-	        definition.children = definition.children.concat(["completed", "failed"]);
-	    }
-
-	    var i = 0,
-	        childActions = {};
-	    for (; i < definition.children.length; i++) {
-	        var chDef = definition.children[i];
-	        var chName = typeof chDef === "string" ? chDef : chDef.actionName;
-	        childActions[chName] = createAction(chDef);
-	    }
-
-	    var context = _.extend({
-	        eventLabel: "action",
-	        emitter: new _.EventEmitter(),
-	        _isAction: true
-	    }, PublisherMethods, ActionMethods, definition);
-
-	    var functor = function functor() {
-	        var hasChildActions = false;
-	        /* eslint no-unused-vars:0 */
-	        for (var ignore in functor.childActions) {
-	            hasChildActions = true;break;
-	        }
-	        var async = !functor.sync && typeof functor.sync !== "undefined" || hasChildActions;
-	        var triggerType = async ? "triggerAsync" : "trigger";
-	        return functor[triggerType].apply(functor, arguments);
-	    };
-
-	    _.extend(functor, childActions, context);
-
-	    Keep.addAction(functor);
-
-	    return functor;
-	}
-
-/***/ },
-/* 218 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ListenerMethods = __webpack_require__(208),
-	    ListenerMixin = __webpack_require__(219),
-	    _ = __webpack_require__(209);
-
-	module.exports = function(listenable, key) {
-
-	    _.throwIf(typeof(key) === 'undefined', 'Reflux.connect() requires a key.');
-
-	    return {
-	        getInitialState: function() {
-	            if (!_.isFunction(listenable.getInitialState)) {
-	                return {};
-	            }
-
-	            return _.object([key],[listenable.getInitialState()]);
-	        },
-	        componentDidMount: function() {
-	            var me = this;
-
-	            _.extend(me, ListenerMethods);
-
-	            this.listenTo(listenable, function(v) {
-	                me.setState(_.object([key],[v]));
-	            });
-	        },
-	        componentWillUnmount: ListenerMixin.componentWillUnmount
-	    };
-	};
-
-
-/***/ },
-/* 219 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(209),
-	    ListenerMethods = __webpack_require__(208);
-
-	/**
-	 * A module meant to be consumed as a mixin by a React component. Supplies the methods from
-	 * `ListenerMethods` mixin and takes care of teardown of subscriptions.
-	 * Note that if you're using the `connect` mixin you don't need this mixin, as connect will
-	 * import everything this mixin contains!
-	 */
-	module.exports = _.extend({
-
-	    /**
-	     * Cleans up all listener previously registered.
-	     */
-	    componentWillUnmount: ListenerMethods.stopListeningToAll
-
-	}, ListenerMethods);
-
-
-/***/ },
-/* 220 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ListenerMethods = __webpack_require__(208),
-	    ListenerMixin = __webpack_require__(219),
-	    _ = __webpack_require__(209);
-
-	module.exports = function(listenable, key, filterFunc) {
-
-	    _.throwIf(_.isFunction(key), 'Reflux.connectFilter() requires a key.');
-
-	    return {
-	        getInitialState: function() {
-	            if (!_.isFunction(listenable.getInitialState)) {
-	                return {};
-	            }
-
-	            // Filter initial payload from store.
-	            var result = filterFunc.call(this, listenable.getInitialState());
-	            if (typeof(result) !== 'undefined') {
-	                return _.object([key], [result]);
-	            } else {
-	                return {};
-	            }
-	        },
-	        componentDidMount: function() {
-	            var me = this;
-
-	            _.extend(this, ListenerMethods);
-
-	            this.listenTo(listenable, function(value) {
-	                var result = filterFunc.call(me, value);
-	                me.setState(_.object([key], [result]));
-	            });
-	        },
-	        componentWillUnmount: ListenerMixin.componentWillUnmount
-	    };
-	};
-
-
-/***/ },
-/* 221 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ListenerMethods = __webpack_require__(208);
-
-	/**
-	 * A mixin factory for a React component. Meant as a more convenient way of using the `ListenerMixin`,
-	 * without having to manually set listeners in the `componentDidMount` method.
-	 *
-	 * @param {Action|Store} listenable An Action or Store that should be
-	 *  listened to.
-	 * @param {Function|String} callback The callback to register as event handler
-	 * @param {Function|String} defaultCallback The callback to register as default handler
-	 * @returns {Object} An object to be used as a mixin, which sets up the listener for the given listenable.
-	 */
-	module.exports = function(listenable,callback,initial){
-	    return {
-	        /**
-	         * Set up the mixin before the initial rendering occurs. Import methods from `ListenerMethods`
-	         * and then make the call to `listenTo` with the arguments provided to the factory function
-	         */
-	        componentDidMount: function() {
-	            for(var m in ListenerMethods){
-	                if (this[m] !== ListenerMethods[m]){
-	                    if (this[m]){
-	                        throw "Can't have other property '"+m+"' when using Reflux.listenTo!";
-	                    }
-	                    this[m] = ListenerMethods[m];
-	                }
-	            }
-	            this.listenTo(listenable,callback,initial);
-	        },
-	        /**
-	         * Cleans up all listener previously registered.
-	         */
-	        componentWillUnmount: ListenerMethods.stopListeningToAll
-	    };
-	};
-
-
-/***/ },
-/* 222 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ListenerMethods = __webpack_require__(208);
-
-	/**
-	 * A mixin factory for a React component. Meant as a more convenient way of using the `listenerMixin`,
-	 * without having to manually set listeners in the `componentDidMount` method. This version is used
-	 * to automatically set up a `listenToMany` call.
-	 *
-	 * @param {Object} listenables An object of listenables
-	 * @returns {Object} An object to be used as a mixin, which sets up the listeners for the given listenables.
-	 */
-	module.exports = function(listenables){
-	    return {
-	        /**
-	         * Set up the mixin before the initial rendering occurs. Import methods from `ListenerMethods`
-	         * and then make the call to `listenTo` with the arguments provided to the factory function
-	         */
-	        componentDidMount: function() {
-	            for(var m in ListenerMethods){
-	                if (this[m] !== ListenerMethods[m]){
-	                    if (this[m]){
-	                        throw "Can't have other property '"+m+"' when using Reflux.listenToMany!";
-	                    }
-	                    this[m] = ListenerMethods[m];
-	                }
-	            }
-	            this.listenToMany(listenables);
-	        },
-	        /**
-	         * Cleans up all listener previously registered.
-	         */
-	        componentWillUnmount: ListenerMethods.stopListeningToAll
-	    };
-	};
-
-
-/***/ },
-/* 223 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/* globals React: false */
-
-	var Reflux = __webpack_require__(206);
-	Reflux.defineReact = __webpack_require__(224);
-
-	// useful utility for ES6 work, mimics the ability to extend
-	Reflux.utils.inherits = function(subClass, superClass) {
-		if (typeof superClass !== "function" && superClass !== null) {
-			throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-		}
-		subClass.prototype = Object.create(superClass && superClass.prototype, {
-			constructor: {
-				value: subClass,
-				enumerable: false,
-				writable: true,
-				configurable: true
-			}
-		});
-		if (superClass) {
-			if (Object.setPrototypeOf) {
-				Object.setPrototypeOf(subClass, superClass);
-			} else {
-				/* jshint proto: true */
-				subClass.__proto__ = superClass;
-			}
-		}
-	};
-
-	// first try to see if there's a global React var and use it
-	if (typeof React !== 'undefined' && React) {
-		Reflux.defineReact(React);
-	// otherwise we're gonna resort to 'try' stuff in case of other environments
-	} else {
-		try {
-			var R = __webpack_require__(1); // we ignore this in browserify manually (see grunt file), so it's more of a doublecheck for in node
-			Reflux.defineReact(R);
-		} catch (e) {}
-	}
-
-
-/***/ },
 /* 224 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* globals React: false */
-
-	var Reflux = __webpack_require__(206);
-
-	/**
-	 * Reflux.defineReact function where you can manually supply
-	 * the React object in order to create in case Reflux needs to load before
-	 * React or there is a modular environment where there won't be a global
-	 * React variable.
-	 * @note The third param is for internal usage only.
-	 */
-	var _react, _defined = false;
-	function defineReact(react, noLongerUsed, extend)
-	{
-		var proto, _extend;
-		
-		// if no Reflux object is yet available then return and just wait until defineReact is called manually with it
-		try {
-			_react  = react  || _react  || React;
-			_extend = extend || _react.Component;
-		} catch (e) {
-			return;
-		}
-		
-		// if Reflux and React aren't present then ignore, wait until they are properly present
-		// also ignore if it's been called before UNLESS there's manual extending happening
-		if (!_react || !_extend || (_defined && !extend)) {
-			return;
-		}
-		
-		// ----------- BEGIN Reflux.Component ------------
-		/**
-		 * Reflux.Component:
-		 * An implementation for idiomatic React.js classes that mix with
-		 * Reflux stores. To utilize extend Reflux.Component instead of
-		 * React.Component. Then you may hook any Reflux store that has a
-		 * `this.state` property containing its state values to the component
-		 * via `this.store` or an Array of Reflux stores via `this.stores` in
-		 * the component's constructor (similar to how you assign initial state
-		 * in the constructor in ES6 style React). The default values of the
-		 * stores will automatically reflect in the component's state, and any
-		 * further `trigger` calls from that store will update properties passed
-		 * in the trigger into the component automatically.
-		 */
-		var RefluxComponent = function(props, context, updater) {
-			_extend.call(this, props, context, updater);
-		};
-		
-		// equivalent of `extends React.Component` or other class if provided via `extend` param
-		Reflux.utils.inherits(RefluxComponent, _extend);
-		
-		proto = RefluxComponent.prototype;
-		
-		/**
-		 * this.storeKeys
-		 * When this is a falsey value (null by default) the component mixes in
-		 * all properties from the stores attached to it and updates on changes
-		 * from all of them. When set to an array of string keys it will only
-		 * utilized state property names of those keys in any store attached. This
-		 * lets you choose which parts of stores update the component on a component-
-		 * by-component basis. If using this it is best set in the constructor.
-		 */
-		proto.storeKeys = null;
-		
-		// on the mounting of the component that is where the store/stores are attached and initialized if needed
-		proto.componentWillMount = function () {
-			// if there is a this.store then simply push it onto the this.stores array or make one if needed
-			if (this.store) {
-				if (Array.isArray(this.stores)) {
-					this.stores.unshift(this.store);
-				} else {
-					this.stores = [this.store];
-				}
-			}
-			
-			if (this.stores) {
-				this.__storeunsubscribes__ = this.__storeunsubscribes__ || [];
-				var sS = this.setState.bind(this);
-				// this handles the triggering of a store, checking what's updated if proto.storeKeys is utilized
-				var onStoreTrigger = function(obj){
-					var updateObj = filterByStoreKeys(this.storeKeys, obj);
-					if (updateObj) {
-						sS(updateObj);
-					}
-				}.bind(this);
-				// for each store in this.stores...
-				for (var i = 0, ii = this.stores.length; i < ii; i++) {
-					var str = this.stores[i];
-					// if's a function then we know it's a class getting passed, not an instance
-					if (typeof str === 'function') {
-						var storeId = str.id;
-						// if there is NOT a .singleton property on the store then this store has not been initialized yet, so do so
-						if (!str.singleton) {
-							str.singleton = new str();
-							if (storeId) {
-								Reflux.stores[storeId] = str.singleton;
-							}
-						}
-						// before we weren't sure if we were working with an instance or class, so now we know an instance is created set it
-						// to the variables we were using so that we can just continue on knowing it's the instance we're working with
-						this.stores[i] = str = str.singleton;
-						// the instance should have an .id property as well if the class does, so set that here
-						str.id = storeId;
-						// if there is an id and there is a global state property for this store then merge
-						// the properties from that global state into the default state of the store AND then
-						// set the global state to that new state (since it may have previously been partial)
-						if (storeId && Reflux.GlobalState[storeId]) {
-							for (var key in Reflux.GlobalState[storeId]) {
-								str.state[key] = Reflux.GlobalState[storeId][key];
-							}
-							Reflux.GlobalState[storeId] = str.state;
-						// otherwise (if it has an id) set the global state to the default state of the store
-						} else if (storeId) {
-							Reflux.GlobalState[storeId] = str.state;
-						}
-						// if no id, then no messing with global state
-					}
-					// listen/subscribe for the ".trigger()" in the store, and track the unsubscribes so that we can unsubscribe on unmount
-					if (!Reflux.serverMode) {
-						this.__storeunsubscribes__.push(str.listen(onStoreTrigger));
-					}
-					// run set state so that it mixes in the props from the store with the component
-					var updateObj = filterByStoreKeys(this.storeKeys, str.state);
-					if (updateObj) {
-						this.setState(updateObj);
-					}
-				}
-			}
-			
-			// mapStoreToState needs to know if is ready to map or must wait
-			this.__readytomap__ = true;
-			// if there are mappings that were delayed, do them now
-			var dmaps = this.__delayedmaps__;
-			if (dmaps) {
-				for (var j=0,jj=dmaps.length; j<jj; j++) {
-					dmaps[j].func( dmaps[j].state );
-				}
-			}
-			this.__delayedmaps__ = null;
-		};
-		
-		// on the unmount phase of the component unsubscribe that which we subscribed earlier to keep our garbage trail clean
-		proto.componentWillUnmount = function () {
-			if (this.__storeunsubscribes__) {
-				for (var i = 0, ii = this.__storeunsubscribes__.length; i < ii; i++) {
-					this.__storeunsubscribes__[i]();
-				}
-			}
-			this.__readytomap__ = false;
-		};
-		
-		/**
-		 * this.mapStoreToState
-		 * This function allow you to supply map the state of a store to the
-		 * state of this component manually via your own logic. This method
-		 * is completely separate from this.store/this.stores and/or this.storeKeys.
-		 * Call this function with an ES6 store (class or singleton instance) as the
-		 * first argument and your filter function as the second. Your filter function
-		 * will receive an object of the parts of the ES6 store being updated every
-		 * time its setState is called. Your filter function then returns an object
-		 * which will be merged with the component state (IF it has any properties at all,
-		 * should you return a blank object the component will not rerender).
-		 */
-		proto.mapStoreToState = function(store, filterFunc)
-		{
-			// make sure we have a proper singleton instance to work with
-			if (typeof store === 'function') {
-				if (store.singleton) {
-					store = store.singleton;
-				} else {
-					store = Reflux.initStore(store);
-				}
-			}
-			
-			// we need a closure so that the called function can remember the proper filter function to use, so function gets defined here
-			var self = this;
-			function onMapStoreTrigger(obj) {
-				// get an object 
-				var update = filterFunc.call(self, obj);
-				// if no object returned from filter functions do nothing
-				if (!update) {
-					return;
-				}
-				// check if the update actually has any mapped props
-				/*jshint unused: false */
-				var hasProps = false;
-				for (var check in update) {
-					hasProps = true;
-					break;
-				}
-				// if there were props mapped, then update via setState
-				if (hasProps) {
-					self.setState(update);
-				}
-			}
-			
-			// add the listener to know when the store is triggered
-			this.__storeunsubscribes__ = this.__storeunsubscribes__ || [];
-			this.__storeunsubscribes__.push(store.listen(onMapStoreTrigger));
-			
-			// now actually run onMapStoreTrigger with the full store state so that we immediately have all store state mapped to component state
-			if (this.__readytomap__) {
-				onMapStoreTrigger(store.state);
-			} else {
-				this.__delayedmaps__ = this.__delayedmaps__ || [];
-				this.__delayedmaps__.push({func:onMapStoreTrigger, state:store.state});
-			}
-		};
-		
-		/**
-		 * Reflux.Component.extend(OtherClass)
-		 * This allows you to get classes that extend off of another React.Component
-		 * inheriting class. For example if you're using a third party that uses
-		 * components that allow `class MyComponent extends LibComponent` (where LibComponent
-		 * itself extends React.Component) and you want to use that component with ES6 then
-		 * you can make a class `var MyDualComponent = Reflux.Component.extend(LibComponent);`
-		 * then you can use `class MyComponent extends MyDualComponent` to get the benefits
-		 * of both libraries.
-		 */
-		RefluxComponent.extend = function(clss) {
-			return defineReact(null, null, clss);
-		};
-		
-		// if is being manually called with an `extend` argument present then just return the created class
-		if (extend) {
-			return RefluxComponent;
-		}
-		
-		// otherwise set as Reflux.Component and continue with other normal definitions
-		Reflux.Component = RefluxComponent;
-		
-		// also set Reflux.PureComponent (if it exists) using the .extend feature
-		if (_react.PureComponent) {
-			Reflux.PureComponent = RefluxComponent.extend(_react.PureComponent);
-		}
-		
-		// ------------ END Reflux.Component ------------
-		
-		// --------- BEGIN Reflux.Store ------------
-		/**
-		 * Reflux.Store:
-		 * Also implements optional Reflux.Store class that is idiomatic with
-		 * the React ES6 style. You extend Reflux.Store and then the rest works
-		 * the same as createStore, except the constructor instead of init, and
-		 * it holds state in a state property, and a .setState method is available
-		 * which automatically updates state and does a trigger. Then when using
-		 * with this.store or this.stores in an ES6 component just plass the class,
-		 * it will deal with a singleton instantiation of the class automatically.
-		 */
-		var RefluxStore = function() {
-			// extending doesn't really work well here, so instead we create an internal instance
-			// and just loop through its properties/methods and make a getter/setter for each
-			// that will actually be getting and setting on that internal instance.
-			this.__store__ = Reflux.createStore();
-			this.state = {};
-			var self = this;
-			for (var key in this.__store__) {
-				/*jshint loopfunc: true */
-				(function (prop) {
-					Object.defineProperty(self, prop, {
-						get: function () { return self.__store__[prop]; },
-						set: function (v) { self.__store__[prop] = v; }
-					});
-				})(key);
-			}
-		};
-		
-		proto = RefluxStore.prototype;
-		
-		// this defines the listenables property, mostly intended to be set as `this.listenables` in the constructor of the store
-		// it is essentially a shortcut to the `listenToMany` method
-		Object.defineProperty(proto, "listenables", {
-			get: function () {
-				return this.__listenables__;
-			},
-			set: function (v) {
-				var Combined = {};
-				if (Array.isArray(v)){
-					v.forEach(function(obj) {
-						for (var key in obj) {
-							Combined[key] = obj[key];
-						}
-					});
-				} else {
-					Combined = v;
-				}
-				this.__listenables__ = Combined;
-				this.listenToMany(Combined);
-			},
-			enumerable: true,
-			configurable: true
-		});
-		
-		// allows simple usage of `this.setState(obj)` within the store to both update the state and trigger the store to update
-		// components that it is attached to in a simple way that is idiomatic with React
-		proto.setState = function (obj) {
-			// Object.assign(this.state, obj); // later turn this to Object.assign and remove loop once support is good enough
-			for (var key in obj) {
-				this.state[key] = obj[key];
-			}
-			// if there's an id (i.e. it's being tracked by the global state) then make sure to update the global state
-			if (this.id) {
-				Reflux.GlobalState[this.id] = this.state;
-			}
-			// trigger, because any component it's attached to is listening and will merge the store state into its own on a store trigger
-			this.trigger(obj);
-		};
-		
-		// this is a static property so that other code can identify that this is a Reflux.Store class
-		// has issues specifically when using babel to transpile your ES6 stores for IE10 and below, not documented and shouldn't use yet
-		Object.defineProperty(RefluxStore, "isES6Store", {
-			get: function () {
-				return true;
-			},
-			enumerable: true,
-			configurable: true
-		});
-		
-		// allows a shortcut for accessing MyStore.singleton.state as MyStore.state (since common usage makes a singleton)
-		Object.defineProperty(RefluxStore, "state", {
-			get: function () {
-				if (!this.singleton) {
-					throw new Error('Reflux.Store.state is inaccessible before the store has been initialized.');
-				}
-				return this.singleton.state;
-			},
-			enumerable: true,
-			configurable: true
-		});
-		
-		/* NOTE:
-		If a Reflux.Store definition is given a static id property and used
-		properly within a Reflux.Component or with Reflux.initStore then
-		it will be added to the Reflux.GlobalState object which automatically tracks the
-		current state of all such defined stores in the program. */
-		
-		Reflux.Store = RefluxStore;
-		// ----------- END Reflux.Store -------------
-		
-		// --------- BEGIN Reflux Static Props/Methods ------------
-		/**
-		 * Reflux.GlobalState is where data is stored for any Reflux.Store that has a static id property. Each store's
-		 * state will be on the Reflux.GlobalState object with the id as the key. So a store with the id "MyStore" and
-		 * a state {"color":"red"} will end up with a Reflux.GlobalState of {"MyStore":{"color":"red"}}
-		 * Reflux.GlobalState is an accessible part of the API. However, keep in mind that non-primitive properties you
-		 * read off of it will continue to mutate and you can only manually mutate Reflux.GlobalState BEFORE any component
-		 * mounting of components with ES6 stores. For more functionality look to Reflux.setGlobalState to change the global
-		 * state at any point, and Reflux.getGlobalState to return a deep clone of the Reflux.GlobalState object which will
-		 * not continue to mutate as Reflux.GlobalState continues to mutate.
-		 */
-		Reflux.GlobalState = Reflux.GlobalState || {};
-		
-		/**
-		 * Reflux.stores
-		 * All initialized stores that have an id will have a reference to their singleton stored here with the key being the id.
-		 */
-		Reflux.stores = {};
-		
-		/**
-		 * Reflux.getGlobalState takes no arguments, and returns a deep clone of Reflux.GlobalState 
-		 * which will not continue to mutate as Reflux.GlobalState does. It can essentially store
-		 * snapshots of the global state as the program goes for saving or for in-app time travel.
-		 */
-		Reflux.getGlobalState = function() {
-			return clone(Reflux.GlobalState);
-		};
-		
-		/**
-		 * Reflux.setGlobalState takes one argument that is a representation of the a possible
-		 * global state. It updates all stores in the program to represent data in that given state.
-		 * This includes triggering those stores so that that state is represented in any Reflux.Component
-		 * instances they are attached to. Partial states may be given to it, and only the represented
-		 * stores/state values will be updated.
-		 */
-		Reflux.setGlobalState = function(obj) {
-			for (var storeID in obj) {
-				if (Reflux.stores[storeID]) {
-					Reflux.stores[storeID].setState(obj[storeID]);
-				} else {
-					Reflux.GlobalState[storeID] = obj[storeID];
-				}
-			}
-		};
-		
-		/**
-		 * Reflux.initStore takes one argument (a class that extends Reflux.Store) and returns a singleton
-		 * intance of that class. Its main functionality is to be able to mimic what happens to stores attached to
-		 * this.store or this.stores during the mounting phase of a component without having to actually attach the
-		 * store to a component in order to work properly with the global state.
-		 */
-		// Reflux.initializeGlobalStore is kept for backwards compatibility, but deprecated since the function is
-		// now for more broad instantiation of globally stored AND non-globally stored classes
-		Reflux.initializeGlobalStore = Reflux.initStore = function(str) {
-			var storeId = str.id;
-			// if they're initializing something twice then we're done already, return it
-			if (str.singleton) {
-				return str.singleton;
-			}
-			// if no id then it's easy: just make new instance and set to singleton
-			if (!storeId) {
-				str.singleton = new str();
-				return str.singleton;
-			}
-			// create the singleton and assign it to the class's singleton static property
-			var inst = str.singleton = new str();
-			// store it on the Reflux.stores array to be accessible later
-			Reflux.stores[storeId] = inst;
-			// the singleton instance itself should also have the id property of the class
-			inst.id = storeId;
-			// if the global state has something set for this id, copy it to the state and then
-			// make sure to set the global state to the end result, since it may have only been partial
-			if (Reflux.GlobalState[storeId]) {
-				for (var key in Reflux.GlobalState[storeId]) {
-					inst.state[key] = Reflux.GlobalState[storeId][key];
-				}
-				Reflux.GlobalState[storeId] = inst.state;
-			// otherwise just set the global state to the default state of the class
-			} else {
-				Reflux.GlobalState[storeId] = inst.state;
-			}
-			// returns the singleton itself, though it will also be accessible as as `MyClass.singleton`
-			return inst;
-		};
-		// --------- END Reflux Static Props/Methods ------------
-		
-		// so it knows not to redefine Reflux static stuff and stores if called again
-		_defined = true;
-	}
-
-	// filters a state object by storeKeys array (if it exists)
-	// if filtering and obj contains no properties to use, returns false to let the component know not to update
-	function filterByStoreKeys(storeKeys, obj)
-	{
-		// if there are not storeKeys defined then simply return the whole original object
-		if (!storeKeys) {
-			return obj;
-		}
-		// otherwise go through and only update properties that are in the storeKeys array, and return straight false if there are none
-		var doUpdate = false;
-		var updateObj = {};
-		for (var i = 0, ii = storeKeys.length; i < ii; i++) {
-			var prop = storeKeys[i];
-			if (obj.hasOwnProperty(prop)) {
-				doUpdate = true;
-				updateObj[prop] = obj[prop];
-			}
-		}
-		return doUpdate ? updateObj : false;
-	}
-
-	// this is utilized by some of the global state functionality in order to get a clone that will
-	// not continue to be modified as the GlobalState mutates
-	function clone(frm, to) {
-		if (frm === null || typeof frm !== "object") {
-			return frm;
-		}
-		if (frm.constructor !== Object && frm.constructor !== Array) {
-			return frm;
-		}
-		if (frm.constructor === Date || frm.constructor === RegExp || frm.constructor === Function ||
-			frm.constructor === String || frm.constructor === Number || frm.constructor === Boolean) {
-			return new frm.constructor(frm);
-		}
-		to = to || new frm.constructor();
-		for (var name in frm) {
-			to[name] = typeof to[name] === "undefined" ? clone(frm[name], null) : to[name];
-		}
-		return to;
-	}
-
-	module.exports = defineReact;
-
-
-
-/***/ },
-/* 225 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	/**
-	 * 
-	 */
-	var Reflux = __webpack_require__(205);
-	var MapActions = __webpack_require__(204);
-
-	var _require = __webpack_require__(226),
-	    ApiCalls = _require.ApiCalls;
-
-	var MapStore = Reflux.createStore({
-	    init: function init() {
-	        this.listenTo(MapActions.getMoreMarkers, this.onGetMoreMarkers);
-	        this.listenTo(MapActions.putPlaceOnMap, this.onPutPlaceOnMap);
-	        this.listenTo(MapActions.deletePlaceOnMap, this.onDeletePlaceOnMap);
-
-	        this.markers = [];
-	        this.place = [];
-	    },
-	    initMarkers: function initMarkers(markers) {
-	        if (markers) {
-	            this.markers = markers;
-	        } else {
-	            // If server rendering is disabled, we must get post from API
-	            this._getMarkers();
-	        }
-	    },
-	    onGetMoreMarkers: function onGetMoreMarkers(radius) {
-	        // Get more posts from server
-	        this._getMarkers(radius);
-	    },
-
-
-	    // _getMarkers(radius = 1000) {
-	    //     ApiCalls.getMarkers(radius).done( (markers) => {
-	    //         this.markers = this.markers.concat(markers);
-	    //         this.trigger();
-	    //     });
-	    // }
-	    _getMarkers: function _getMarkers() {
-	        var _this = this;
-
-	        var radius = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-	        ApiCalls.getAllMarkers().done(function (markers) {
-	            _this.markers = _this.markers.concat(markers);
-	            _this.trigger();
-	            console.log('_getMarkers', _this.markers);
-	        });
-	    },
-	    onPutPlaceOnMap: function onPutPlaceOnMap(lat, lng) {
-	        console.log('putPlaceOnMap', lat);
-	        this.place = [{
-	            "_id": {
-	                "$oid": "dummy123"
-	            },
-	            "pindex": "3",
-	            "userId": "2",
-	            "location": {
-	                "type": "Point",
-	                "coordinates": [lat, lng]
-	            }
-	        }];
-	        this.trigger();
-	    },
-	    onDeletePlaceOnMap: function onDeletePlaceOnMap(lat, lng) {
-
-	        // if (this.place.location.coordinates.lat = lat) {
-	        //     this.place = []
-	        // }
-	    }
-	});
-
-	module.exports = MapStore;
-
-/***/ },
-/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var _require = __webpack_require__(227),
+	var _require = __webpack_require__(225),
 	    CallAjax = _require.CallAjax;
 
-	var wortHost = 'localhost:9000';
+	// const wortHost = 'localhost:9000';
 
-	var AppConfig = {
-	    host: wortHost
-	};
+	// var AppConfig = {
+	//     host                : wortHost
+	// };
 
-	module.exports = AppConfig;
+	// module.exports = AppConfig;
 
 	var ApiCalls = function ApiCalls() {
 	    _classCallCheck(this, ApiCalls);
 	};
 
-	ApiCalls.getMarkers = function (radius) {
-	    return CallAjax.get("http://localhost:9000/api/pommesindex?radius=" + radius);
+	ApiCalls.getAllMarkers = function () {
+	    return CallAjax.get("http://localhost:9000/api/pommesindex/nolimit");
 	};
 
-	ApiCalls.getAllMarkers = function () {
-	    return CallAjax.get("http://localhost:9000/api/pommesindex");
+	ApiCalls.postMarker = function (data) {
+	    return CallAjax.post("http://localhost:9000/api/pommesindex", data);
+	};
+
+	ApiCalls.getMarkersNear = function (lat, lng, radius, limit) {
+	    return CallAjax.get("http://localhost:9000/api/pommesindex/near/" + lat + "/" + lng + "/" + radius + "/" + limit);
 	};
 
 	module.exports = {
@@ -26759,20 +26716,20 @@
 	};
 
 /***/ },
-/* 227 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = {
-	    AlertBox: __webpack_require__(228),
-	    CallAjax: __webpack_require__(237),
-	    RefluxComponent: __webpack_require__(229),
-	    Spinner: __webpack_require__(239)
+	    AlertBox: __webpack_require__(226),
+	    CallAjax: __webpack_require__(235),
+	    RefluxComponent: __webpack_require__(227),
+	    Spinner: __webpack_require__(237)
 	};
 
 /***/ },
-/* 228 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26784,13 +26741,13 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(1);
-	var RefluxComponent = __webpack_require__(229);
-	var $ = __webpack_require__(232);
-	var classnames = __webpack_require__(233);
+	var RefluxComponent = __webpack_require__(227);
+	var $ = __webpack_require__(230);
+	var classnames = __webpack_require__(231);
 
-	var AlertBoxActions = __webpack_require__(234);
-	var AlertMessage = __webpack_require__(235);
-	var Config = __webpack_require__(236);
+	var AlertBoxActions = __webpack_require__(232);
+	var AlertMessage = __webpack_require__(233);
+	var Config = __webpack_require__(234);
 
 	/**
 	 * Display/Hide an alert message.
@@ -26996,7 +26953,7 @@
 	module.exports = AlertBox;
 
 /***/ },
-/* 229 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27007,9 +26964,9 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var aggregation = __webpack_require__(230);
+	var aggregation = __webpack_require__(228);
 	var React = __webpack_require__(1);
-	var RefluxListener = __webpack_require__(231);
+	var RefluxListener = __webpack_require__(229);
 
 	var RefluxComponent = function (_aggregation) {
 	  _inherits(RefluxComponent, _aggregation);
@@ -27026,7 +26983,7 @@
 	module.exports = RefluxComponent;
 
 /***/ },
-/* 230 */
+/* 228 */
 /***/ function(module, exports) {
 
 	/*
@@ -27097,7 +27054,7 @@
 
 
 /***/ },
-/* 231 */
+/* 229 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -27161,7 +27118,7 @@
 	module.exports = RefluxListener;
 
 /***/ },
-/* 232 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -37420,7 +37377,7 @@
 
 
 /***/ },
-/* 233 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -37474,12 +37431,12 @@
 
 
 /***/ },
-/* 234 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Reflux = __webpack_require__(205);
+	var Reflux = __webpack_require__(174);
 
 	var AlertBoxActions = {
 	    displayRestError: Reflux.createAction({ asyncResult: true }),
@@ -37498,15 +37455,15 @@
 	module.exports = AlertBoxActions;
 
 /***/ },
-/* 235 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var AlertBox = __webpack_require__(228);
-	var Config = __webpack_require__(236);
+	var AlertBox = __webpack_require__(226);
+	var Config = __webpack_require__(234);
 
 	var AlertMessage =
 
@@ -37568,7 +37525,7 @@
 	module.exports = AlertMessage;
 
 /***/ },
-/* 236 */
+/* 234 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -37599,7 +37556,7 @@
 	module.exports = Configuration;
 
 /***/ },
-/* 237 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -37608,11 +37565,11 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var $ = __webpack_require__(232);
-	var Configuration = __webpack_require__(238);
-	var LodashUtils = __webpack_require__(242);
-	var _map = __webpack_require__(243);
-	var _merge = __webpack_require__(365);
+	var $ = __webpack_require__(230);
+	var Configuration = __webpack_require__(236);
+	var LodashUtils = __webpack_require__(240);
+	var _map = __webpack_require__(241);
+	var _merge = __webpack_require__(363);
 
 	/**
 	 * Created by bladron on 08/04/16.
@@ -37830,13 +37787,13 @@
 	module.exports = CallAjax;
 
 /***/ },
-/* 238 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var Spinner = __webpack_require__(239);
-	var AlertBox = __webpack_require__(228);
+	var Spinner = __webpack_require__(237);
+	var AlertBox = __webpack_require__(226);
 
 	var Configuration = {
 	    showSpinner: Spinner.Actions.displaySpinner,
@@ -37851,7 +37808,7 @@
 	module.exports = Configuration;
 
 /***/ },
-/* 239 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -37865,9 +37822,9 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(1);
-	var RefluxComponent = __webpack_require__(229);
-	var SpinnerActions = __webpack_require__(240);
-	var Spin = __webpack_require__(241);
+	var RefluxComponent = __webpack_require__(227);
+	var SpinnerActions = __webpack_require__(238);
+	var Spin = __webpack_require__(239);
 
 	/**
 	 * Display/Hide a Spinner.
@@ -38081,12 +38038,12 @@
 	module.exports = Spinner;
 
 /***/ },
-/* 240 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Reflux = __webpack_require__(205);
+	var Reflux = __webpack_require__(174);
 
 	var SpinnerActions = {
 	    displaySpinner: Reflux.createAction({ asyncResult: true }),
@@ -38098,7 +38055,7 @@
 	module.exports = SpinnerActions;
 
 /***/ },
-/* 241 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -38481,7 +38438,7 @@
 
 
 /***/ },
-/* 242 */
+/* 240 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -38507,13 +38464,13 @@
 	module.exports = LodashUtils;
 
 /***/ },
-/* 243 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayMap = __webpack_require__(244),
-	    baseIteratee = __webpack_require__(245),
-	    baseMap = __webpack_require__(359),
-	    isArray = __webpack_require__(308);
+	var arrayMap = __webpack_require__(242),
+	    baseIteratee = __webpack_require__(243),
+	    baseMap = __webpack_require__(357),
+	    isArray = __webpack_require__(306);
 
 	/**
 	 * Creates an array of values by running each element in `collection` thru
@@ -38566,7 +38523,7 @@
 
 
 /***/ },
-/* 244 */
+/* 242 */
 /***/ function(module, exports) {
 
 	/**
@@ -38593,14 +38550,14 @@
 
 
 /***/ },
-/* 245 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMatches = __webpack_require__(246),
-	    baseMatchesProperty = __webpack_require__(340),
-	    identity = __webpack_require__(355),
-	    isArray = __webpack_require__(308),
-	    property = __webpack_require__(356);
+	var baseMatches = __webpack_require__(244),
+	    baseMatchesProperty = __webpack_require__(338),
+	    identity = __webpack_require__(353),
+	    isArray = __webpack_require__(306),
+	    property = __webpack_require__(354);
 
 	/**
 	 * The base implementation of `_.iteratee`.
@@ -38630,12 +38587,12 @@
 
 
 /***/ },
-/* 246 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsMatch = __webpack_require__(247),
-	    getMatchData = __webpack_require__(337),
-	    matchesStrictComparable = __webpack_require__(339);
+	var baseIsMatch = __webpack_require__(245),
+	    getMatchData = __webpack_require__(335),
+	    matchesStrictComparable = __webpack_require__(337);
 
 	/**
 	 * The base implementation of `_.matches` which doesn't clone `source`.
@@ -38658,11 +38615,11 @@
 
 
 /***/ },
-/* 247 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(248),
-	    baseIsEqual = __webpack_require__(292);
+	var Stack = __webpack_require__(246),
+	    baseIsEqual = __webpack_require__(290);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -38726,15 +38683,15 @@
 
 
 /***/ },
-/* 248 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(249),
-	    stackClear = __webpack_require__(257),
-	    stackDelete = __webpack_require__(258),
-	    stackGet = __webpack_require__(259),
-	    stackHas = __webpack_require__(260),
-	    stackSet = __webpack_require__(261);
+	var ListCache = __webpack_require__(247),
+	    stackClear = __webpack_require__(255),
+	    stackDelete = __webpack_require__(256),
+	    stackGet = __webpack_require__(257),
+	    stackHas = __webpack_require__(258),
+	    stackSet = __webpack_require__(259);
 
 	/**
 	 * Creates a stack cache object to store key-value pairs.
@@ -38759,14 +38716,14 @@
 
 
 /***/ },
-/* 249 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var listCacheClear = __webpack_require__(250),
-	    listCacheDelete = __webpack_require__(251),
-	    listCacheGet = __webpack_require__(254),
-	    listCacheHas = __webpack_require__(255),
-	    listCacheSet = __webpack_require__(256);
+	var listCacheClear = __webpack_require__(248),
+	    listCacheDelete = __webpack_require__(249),
+	    listCacheGet = __webpack_require__(252),
+	    listCacheHas = __webpack_require__(253),
+	    listCacheSet = __webpack_require__(254);
 
 	/**
 	 * Creates an list cache object.
@@ -38797,7 +38754,7 @@
 
 
 /***/ },
-/* 250 */
+/* 248 */
 /***/ function(module, exports) {
 
 	/**
@@ -38816,10 +38773,10 @@
 
 
 /***/ },
-/* 251 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(252);
+	var assocIndexOf = __webpack_require__(250);
 
 	/** Used for built-in method references. */
 	var arrayProto = Array.prototype;
@@ -38857,10 +38814,10 @@
 
 
 /***/ },
-/* 252 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(253);
+	var eq = __webpack_require__(251);
 
 	/**
 	 * Gets the index at which the `key` is found in `array` of key-value pairs.
@@ -38884,7 +38841,7 @@
 
 
 /***/ },
-/* 253 */
+/* 251 */
 /***/ function(module, exports) {
 
 	/**
@@ -38927,10 +38884,10 @@
 
 
 /***/ },
-/* 254 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(252);
+	var assocIndexOf = __webpack_require__(250);
 
 	/**
 	 * Gets the list cache value for `key`.
@@ -38952,10 +38909,10 @@
 
 
 /***/ },
-/* 255 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(252);
+	var assocIndexOf = __webpack_require__(250);
 
 	/**
 	 * Checks if a list cache value for `key` exists.
@@ -38974,10 +38931,10 @@
 
 
 /***/ },
-/* 256 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(252);
+	var assocIndexOf = __webpack_require__(250);
 
 	/**
 	 * Sets the list cache `key` to `value`.
@@ -39006,10 +38963,10 @@
 
 
 /***/ },
-/* 257 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(249);
+	var ListCache = __webpack_require__(247);
 
 	/**
 	 * Removes all key-value entries from the stack.
@@ -39027,7 +38984,7 @@
 
 
 /***/ },
-/* 258 */
+/* 256 */
 /***/ function(module, exports) {
 
 	/**
@@ -39051,7 +39008,7 @@
 
 
 /***/ },
-/* 259 */
+/* 257 */
 /***/ function(module, exports) {
 
 	/**
@@ -39071,7 +39028,7 @@
 
 
 /***/ },
-/* 260 */
+/* 258 */
 /***/ function(module, exports) {
 
 	/**
@@ -39091,12 +39048,12 @@
 
 
 /***/ },
-/* 261 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(249),
-	    Map = __webpack_require__(262),
-	    MapCache = __webpack_require__(277);
+	var ListCache = __webpack_require__(247),
+	    Map = __webpack_require__(260),
+	    MapCache = __webpack_require__(275);
 
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -39131,11 +39088,11 @@
 
 
 /***/ },
-/* 262 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(263),
-	    root = __webpack_require__(268);
+	var getNative = __webpack_require__(261),
+	    root = __webpack_require__(266);
 
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -39144,11 +39101,11 @@
 
 
 /***/ },
-/* 263 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(264),
-	    getValue = __webpack_require__(276);
+	var baseIsNative = __webpack_require__(262),
+	    getValue = __webpack_require__(274);
 
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -39167,13 +39124,13 @@
 
 
 /***/ },
-/* 264 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(265),
-	    isMasked = __webpack_require__(273),
-	    isObject = __webpack_require__(272),
-	    toSource = __webpack_require__(275);
+	var isFunction = __webpack_require__(263),
+	    isMasked = __webpack_require__(271),
+	    isObject = __webpack_require__(270),
+	    toSource = __webpack_require__(273);
 
 	/**
 	 * Used to match `RegExp`
@@ -39220,11 +39177,11 @@
 
 
 /***/ },
-/* 265 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(266),
-	    isObject = __webpack_require__(272);
+	var baseGetTag = __webpack_require__(264),
+	    isObject = __webpack_require__(270);
 
 	/** `Object#toString` result references. */
 	var asyncTag = '[object AsyncFunction]',
@@ -39263,12 +39220,12 @@
 
 
 /***/ },
-/* 266 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(267),
-	    getRawTag = __webpack_require__(270),
-	    objectToString = __webpack_require__(271);
+	var Symbol = __webpack_require__(265),
+	    getRawTag = __webpack_require__(268),
+	    objectToString = __webpack_require__(269);
 
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -39297,10 +39254,10 @@
 
 
 /***/ },
-/* 267 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(268);
+	var root = __webpack_require__(266);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -39309,10 +39266,10 @@
 
 
 /***/ },
-/* 268 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(269);
+	var freeGlobal = __webpack_require__(267);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -39324,7 +39281,7 @@
 
 
 /***/ },
-/* 269 */
+/* 267 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -39335,10 +39292,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 270 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(267);
+	var Symbol = __webpack_require__(265);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -39387,7 +39344,7 @@
 
 
 /***/ },
-/* 271 */
+/* 269 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -39415,7 +39372,7 @@
 
 
 /***/ },
-/* 272 */
+/* 270 */
 /***/ function(module, exports) {
 
 	/**
@@ -39452,10 +39409,10 @@
 
 
 /***/ },
-/* 273 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(274);
+	var coreJsData = __webpack_require__(272);
 
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -39478,10 +39435,10 @@
 
 
 /***/ },
-/* 274 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(268);
+	var root = __webpack_require__(266);
 
 	/** Used to detect overreaching core-js shims. */
 	var coreJsData = root['__core-js_shared__'];
@@ -39490,7 +39447,7 @@
 
 
 /***/ },
-/* 275 */
+/* 273 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -39522,7 +39479,7 @@
 
 
 /***/ },
-/* 276 */
+/* 274 */
 /***/ function(module, exports) {
 
 	/**
@@ -39541,14 +39498,14 @@
 
 
 /***/ },
-/* 277 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mapCacheClear = __webpack_require__(278),
-	    mapCacheDelete = __webpack_require__(286),
-	    mapCacheGet = __webpack_require__(289),
-	    mapCacheHas = __webpack_require__(290),
-	    mapCacheSet = __webpack_require__(291);
+	var mapCacheClear = __webpack_require__(276),
+	    mapCacheDelete = __webpack_require__(284),
+	    mapCacheGet = __webpack_require__(287),
+	    mapCacheHas = __webpack_require__(288),
+	    mapCacheSet = __webpack_require__(289);
 
 	/**
 	 * Creates a map cache object to store key-value pairs.
@@ -39579,12 +39536,12 @@
 
 
 /***/ },
-/* 278 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Hash = __webpack_require__(279),
-	    ListCache = __webpack_require__(249),
-	    Map = __webpack_require__(262);
+	var Hash = __webpack_require__(277),
+	    ListCache = __webpack_require__(247),
+	    Map = __webpack_require__(260);
 
 	/**
 	 * Removes all key-value entries from the map.
@@ -39606,14 +39563,14 @@
 
 
 /***/ },
-/* 279 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hashClear = __webpack_require__(280),
-	    hashDelete = __webpack_require__(282),
-	    hashGet = __webpack_require__(283),
-	    hashHas = __webpack_require__(284),
-	    hashSet = __webpack_require__(285);
+	var hashClear = __webpack_require__(278),
+	    hashDelete = __webpack_require__(280),
+	    hashGet = __webpack_require__(281),
+	    hashHas = __webpack_require__(282),
+	    hashSet = __webpack_require__(283);
 
 	/**
 	 * Creates a hash object.
@@ -39644,10 +39601,10 @@
 
 
 /***/ },
-/* 280 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(281);
+	var nativeCreate = __webpack_require__(279);
 
 	/**
 	 * Removes all key-value entries from the hash.
@@ -39665,10 +39622,10 @@
 
 
 /***/ },
-/* 281 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(263);
+	var getNative = __webpack_require__(261);
 
 	/* Built-in method references that are verified to be native. */
 	var nativeCreate = getNative(Object, 'create');
@@ -39677,7 +39634,7 @@
 
 
 /***/ },
-/* 282 */
+/* 280 */
 /***/ function(module, exports) {
 
 	/**
@@ -39700,10 +39657,10 @@
 
 
 /***/ },
-/* 283 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(281);
+	var nativeCreate = __webpack_require__(279);
 
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -39736,10 +39693,10 @@
 
 
 /***/ },
-/* 284 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(281);
+	var nativeCreate = __webpack_require__(279);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -39765,10 +39722,10 @@
 
 
 /***/ },
-/* 285 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(281);
+	var nativeCreate = __webpack_require__(279);
 
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -39794,10 +39751,10 @@
 
 
 /***/ },
-/* 286 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(287);
+	var getMapData = __webpack_require__(285);
 
 	/**
 	 * Removes `key` and its value from the map.
@@ -39818,10 +39775,10 @@
 
 
 /***/ },
-/* 287 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isKeyable = __webpack_require__(288);
+	var isKeyable = __webpack_require__(286);
 
 	/**
 	 * Gets the data for `map`.
@@ -39842,7 +39799,7 @@
 
 
 /***/ },
-/* 288 */
+/* 286 */
 /***/ function(module, exports) {
 
 	/**
@@ -39863,10 +39820,10 @@
 
 
 /***/ },
-/* 289 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(287);
+	var getMapData = __webpack_require__(285);
 
 	/**
 	 * Gets the map value for `key`.
@@ -39885,10 +39842,10 @@
 
 
 /***/ },
-/* 290 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(287);
+	var getMapData = __webpack_require__(285);
 
 	/**
 	 * Checks if a map value for `key` exists.
@@ -39907,10 +39864,10 @@
 
 
 /***/ },
-/* 291 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(287);
+	var getMapData = __webpack_require__(285);
 
 	/**
 	 * Sets the map `key` to `value`.
@@ -39935,11 +39892,11 @@
 
 
 /***/ },
-/* 292 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqualDeep = __webpack_require__(293),
-	    isObjectLike = __webpack_require__(317);
+	var baseIsEqualDeep = __webpack_require__(291),
+	    isObjectLike = __webpack_require__(315);
 
 	/**
 	 * The base implementation of `_.isEqual` which supports partial comparisons
@@ -39969,17 +39926,17 @@
 
 
 /***/ },
-/* 293 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(248),
-	    equalArrays = __webpack_require__(294),
-	    equalByTag = __webpack_require__(300),
-	    equalObjects = __webpack_require__(304),
-	    getTag = __webpack_require__(332),
-	    isArray = __webpack_require__(308),
-	    isBuffer = __webpack_require__(318),
-	    isTypedArray = __webpack_require__(322);
+	var Stack = __webpack_require__(246),
+	    equalArrays = __webpack_require__(292),
+	    equalByTag = __webpack_require__(298),
+	    equalObjects = __webpack_require__(302),
+	    getTag = __webpack_require__(330),
+	    isArray = __webpack_require__(306),
+	    isBuffer = __webpack_require__(316),
+	    isTypedArray = __webpack_require__(320);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -40058,12 +40015,12 @@
 
 
 /***/ },
-/* 294 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(295),
-	    arraySome = __webpack_require__(298),
-	    cacheHas = __webpack_require__(299);
+	var SetCache = __webpack_require__(293),
+	    arraySome = __webpack_require__(296),
+	    cacheHas = __webpack_require__(297);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -40147,12 +40104,12 @@
 
 
 /***/ },
-/* 295 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(277),
-	    setCacheAdd = __webpack_require__(296),
-	    setCacheHas = __webpack_require__(297);
+	var MapCache = __webpack_require__(275),
+	    setCacheAdd = __webpack_require__(294),
+	    setCacheHas = __webpack_require__(295);
 
 	/**
 	 *
@@ -40180,7 +40137,7 @@
 
 
 /***/ },
-/* 296 */
+/* 294 */
 /***/ function(module, exports) {
 
 	/** Used to stand-in for `undefined` hash values. */
@@ -40205,7 +40162,7 @@
 
 
 /***/ },
-/* 297 */
+/* 295 */
 /***/ function(module, exports) {
 
 	/**
@@ -40225,7 +40182,7 @@
 
 
 /***/ },
-/* 298 */
+/* 296 */
 /***/ function(module, exports) {
 
 	/**
@@ -40254,7 +40211,7 @@
 
 
 /***/ },
-/* 299 */
+/* 297 */
 /***/ function(module, exports) {
 
 	/**
@@ -40273,15 +40230,15 @@
 
 
 /***/ },
-/* 300 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(267),
-	    Uint8Array = __webpack_require__(301),
-	    eq = __webpack_require__(253),
-	    equalArrays = __webpack_require__(294),
-	    mapToArray = __webpack_require__(302),
-	    setToArray = __webpack_require__(303);
+	var Symbol = __webpack_require__(265),
+	    Uint8Array = __webpack_require__(299),
+	    eq = __webpack_require__(251),
+	    equalArrays = __webpack_require__(292),
+	    mapToArray = __webpack_require__(300),
+	    setToArray = __webpack_require__(301);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -40391,10 +40348,10 @@
 
 
 /***/ },
-/* 301 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(268);
+	var root = __webpack_require__(266);
 
 	/** Built-in value references. */
 	var Uint8Array = root.Uint8Array;
@@ -40403,7 +40360,7 @@
 
 
 /***/ },
-/* 302 */
+/* 300 */
 /***/ function(module, exports) {
 
 	/**
@@ -40427,7 +40384,7 @@
 
 
 /***/ },
-/* 303 */
+/* 301 */
 /***/ function(module, exports) {
 
 	/**
@@ -40451,10 +40408,10 @@
 
 
 /***/ },
-/* 304 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getAllKeys = __webpack_require__(305);
+	var getAllKeys = __webpack_require__(303);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -40546,12 +40503,12 @@
 
 
 /***/ },
-/* 305 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetAllKeys = __webpack_require__(306),
-	    getSymbols = __webpack_require__(309),
-	    keys = __webpack_require__(312);
+	var baseGetAllKeys = __webpack_require__(304),
+	    getSymbols = __webpack_require__(307),
+	    keys = __webpack_require__(310);
 
 	/**
 	 * Creates an array of own enumerable property names and symbols of `object`.
@@ -40568,11 +40525,11 @@
 
 
 /***/ },
-/* 306 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayPush = __webpack_require__(307),
-	    isArray = __webpack_require__(308);
+	var arrayPush = __webpack_require__(305),
+	    isArray = __webpack_require__(306);
 
 	/**
 	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
@@ -40594,7 +40551,7 @@
 
 
 /***/ },
-/* 307 */
+/* 305 */
 /***/ function(module, exports) {
 
 	/**
@@ -40620,7 +40577,7 @@
 
 
 /***/ },
-/* 308 */
+/* 306 */
 /***/ function(module, exports) {
 
 	/**
@@ -40652,11 +40609,11 @@
 
 
 /***/ },
-/* 309 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayFilter = __webpack_require__(310),
-	    stubArray = __webpack_require__(311);
+	var arrayFilter = __webpack_require__(308),
+	    stubArray = __webpack_require__(309);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -40688,7 +40645,7 @@
 
 
 /***/ },
-/* 310 */
+/* 308 */
 /***/ function(module, exports) {
 
 	/**
@@ -40719,7 +40676,7 @@
 
 
 /***/ },
-/* 311 */
+/* 309 */
 /***/ function(module, exports) {
 
 	/**
@@ -40748,12 +40705,12 @@
 
 
 /***/ },
-/* 312 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(313),
-	    baseKeys = __webpack_require__(327),
-	    isArrayLike = __webpack_require__(331);
+	var arrayLikeKeys = __webpack_require__(311),
+	    baseKeys = __webpack_require__(325),
+	    isArrayLike = __webpack_require__(329);
 
 	/**
 	 * Creates an array of the own enumerable property names of `object`.
@@ -40791,15 +40748,15 @@
 
 
 /***/ },
-/* 313 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(314),
-	    isArguments = __webpack_require__(315),
-	    isArray = __webpack_require__(308),
-	    isBuffer = __webpack_require__(318),
-	    isIndex = __webpack_require__(321),
-	    isTypedArray = __webpack_require__(322);
+	var baseTimes = __webpack_require__(312),
+	    isArguments = __webpack_require__(313),
+	    isArray = __webpack_require__(306),
+	    isBuffer = __webpack_require__(316),
+	    isIndex = __webpack_require__(319),
+	    isTypedArray = __webpack_require__(320);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -40846,7 +40803,7 @@
 
 
 /***/ },
-/* 314 */
+/* 312 */
 /***/ function(module, exports) {
 
 	/**
@@ -40872,11 +40829,11 @@
 
 
 /***/ },
-/* 315 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsArguments = __webpack_require__(316),
-	    isObjectLike = __webpack_require__(317);
+	var baseIsArguments = __webpack_require__(314),
+	    isObjectLike = __webpack_require__(315);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -40914,11 +40871,11 @@
 
 
 /***/ },
-/* 316 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(266),
-	    isObjectLike = __webpack_require__(317);
+	var baseGetTag = __webpack_require__(264),
+	    isObjectLike = __webpack_require__(315);
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]';
@@ -40938,7 +40895,7 @@
 
 
 /***/ },
-/* 317 */
+/* 315 */
 /***/ function(module, exports) {
 
 	/**
@@ -40973,11 +40930,11 @@
 
 
 /***/ },
-/* 318 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(268),
-	    stubFalse = __webpack_require__(320);
+	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(266),
+	    stubFalse = __webpack_require__(318);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -41015,10 +40972,10 @@
 
 	module.exports = isBuffer;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(319)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(317)(module)))
 
 /***/ },
-/* 319 */
+/* 317 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -41034,7 +40991,7 @@
 
 
 /***/ },
-/* 320 */
+/* 318 */
 /***/ function(module, exports) {
 
 	/**
@@ -41058,7 +41015,7 @@
 
 
 /***/ },
-/* 321 */
+/* 319 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -41086,12 +41043,12 @@
 
 
 /***/ },
-/* 322 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(323),
-	    baseUnary = __webpack_require__(325),
-	    nodeUtil = __webpack_require__(326);
+	var baseIsTypedArray = __webpack_require__(321),
+	    baseUnary = __webpack_require__(323),
+	    nodeUtil = __webpack_require__(324);
 
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -41119,12 +41076,12 @@
 
 
 /***/ },
-/* 323 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(266),
-	    isLength = __webpack_require__(324),
-	    isObjectLike = __webpack_require__(317);
+	var baseGetTag = __webpack_require__(264),
+	    isLength = __webpack_require__(322),
+	    isObjectLike = __webpack_require__(315);
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]',
@@ -41185,7 +41142,7 @@
 
 
 /***/ },
-/* 324 */
+/* 322 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -41226,7 +41183,7 @@
 
 
 /***/ },
-/* 325 */
+/* 323 */
 /***/ function(module, exports) {
 
 	/**
@@ -41246,10 +41203,10 @@
 
 
 /***/ },
-/* 326 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(269);
+	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(267);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -41272,14 +41229,14 @@
 
 	module.exports = nodeUtil;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(319)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(317)(module)))
 
 /***/ },
-/* 327 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isPrototype = __webpack_require__(328),
-	    nativeKeys = __webpack_require__(329);
+	var isPrototype = __webpack_require__(326),
+	    nativeKeys = __webpack_require__(327);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -41311,7 +41268,7 @@
 
 
 /***/ },
-/* 328 */
+/* 326 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -41335,10 +41292,10 @@
 
 
 /***/ },
-/* 329 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(330);
+	var overArg = __webpack_require__(328);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeKeys = overArg(Object.keys, Object);
@@ -41347,7 +41304,7 @@
 
 
 /***/ },
-/* 330 */
+/* 328 */
 /***/ function(module, exports) {
 
 	/**
@@ -41368,11 +41325,11 @@
 
 
 /***/ },
-/* 331 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(265),
-	    isLength = __webpack_require__(324);
+	var isFunction = __webpack_require__(263),
+	    isLength = __webpack_require__(322);
 
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -41407,16 +41364,16 @@
 
 
 /***/ },
-/* 332 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DataView = __webpack_require__(333),
-	    Map = __webpack_require__(262),
-	    Promise = __webpack_require__(334),
-	    Set = __webpack_require__(335),
-	    WeakMap = __webpack_require__(336),
-	    baseGetTag = __webpack_require__(266),
-	    toSource = __webpack_require__(275);
+	var DataView = __webpack_require__(331),
+	    Map = __webpack_require__(260),
+	    Promise = __webpack_require__(332),
+	    Set = __webpack_require__(333),
+	    WeakMap = __webpack_require__(334),
+	    baseGetTag = __webpack_require__(264),
+	    toSource = __webpack_require__(273);
 
 	/** `Object#toString` result references. */
 	var mapTag = '[object Map]',
@@ -41471,11 +41428,11 @@
 
 
 /***/ },
-/* 333 */
+/* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(263),
-	    root = __webpack_require__(268);
+	var getNative = __webpack_require__(261),
+	    root = __webpack_require__(266);
 
 	/* Built-in method references that are verified to be native. */
 	var DataView = getNative(root, 'DataView');
@@ -41484,11 +41441,11 @@
 
 
 /***/ },
-/* 334 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(263),
-	    root = __webpack_require__(268);
+	var getNative = __webpack_require__(261),
+	    root = __webpack_require__(266);
 
 	/* Built-in method references that are verified to be native. */
 	var Promise = getNative(root, 'Promise');
@@ -41497,11 +41454,11 @@
 
 
 /***/ },
-/* 335 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(263),
-	    root = __webpack_require__(268);
+	var getNative = __webpack_require__(261),
+	    root = __webpack_require__(266);
 
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -41510,11 +41467,11 @@
 
 
 /***/ },
-/* 336 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(263),
-	    root = __webpack_require__(268);
+	var getNative = __webpack_require__(261),
+	    root = __webpack_require__(266);
 
 	/* Built-in method references that are verified to be native. */
 	var WeakMap = getNative(root, 'WeakMap');
@@ -41523,11 +41480,11 @@
 
 
 /***/ },
-/* 337 */
+/* 335 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isStrictComparable = __webpack_require__(338),
-	    keys = __webpack_require__(312);
+	var isStrictComparable = __webpack_require__(336),
+	    keys = __webpack_require__(310);
 
 	/**
 	 * Gets the property names, values, and compare flags of `object`.
@@ -41553,10 +41510,10 @@
 
 
 /***/ },
-/* 338 */
+/* 336 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(272);
+	var isObject = __webpack_require__(270);
 
 	/**
 	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
@@ -41574,7 +41531,7 @@
 
 
 /***/ },
-/* 339 */
+/* 337 */
 /***/ function(module, exports) {
 
 	/**
@@ -41600,16 +41557,16 @@
 
 
 /***/ },
-/* 340 */
+/* 338 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(292),
-	    get = __webpack_require__(341),
-	    hasIn = __webpack_require__(352),
-	    isKey = __webpack_require__(344),
-	    isStrictComparable = __webpack_require__(338),
-	    matchesStrictComparable = __webpack_require__(339),
-	    toKey = __webpack_require__(351);
+	var baseIsEqual = __webpack_require__(290),
+	    get = __webpack_require__(339),
+	    hasIn = __webpack_require__(350),
+	    isKey = __webpack_require__(342),
+	    isStrictComparable = __webpack_require__(336),
+	    matchesStrictComparable = __webpack_require__(337),
+	    toKey = __webpack_require__(349);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -41639,10 +41596,10 @@
 
 
 /***/ },
-/* 341 */
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(342);
+	var baseGet = __webpack_require__(340);
 
 	/**
 	 * Gets the value at `path` of `object`. If the resolved value is
@@ -41678,11 +41635,11 @@
 
 
 /***/ },
-/* 342 */
+/* 340 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(343),
-	    toKey = __webpack_require__(351);
+	var castPath = __webpack_require__(341),
+	    toKey = __webpack_require__(349);
 
 	/**
 	 * The base implementation of `_.get` without support for default values.
@@ -41708,13 +41665,13 @@
 
 
 /***/ },
-/* 343 */
+/* 341 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(308),
-	    isKey = __webpack_require__(344),
-	    stringToPath = __webpack_require__(346),
-	    toString = __webpack_require__(349);
+	var isArray = __webpack_require__(306),
+	    isKey = __webpack_require__(342),
+	    stringToPath = __webpack_require__(344),
+	    toString = __webpack_require__(347);
 
 	/**
 	 * Casts `value` to a path array if it's not one.
@@ -41735,11 +41692,11 @@
 
 
 /***/ },
-/* 344 */
+/* 342 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(308),
-	    isSymbol = __webpack_require__(345);
+	var isArray = __webpack_require__(306),
+	    isSymbol = __webpack_require__(343);
 
 	/** Used to match property names within property paths. */
 	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -41770,11 +41727,11 @@
 
 
 /***/ },
-/* 345 */
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(266),
-	    isObjectLike = __webpack_require__(317);
+	var baseGetTag = __webpack_require__(264),
+	    isObjectLike = __webpack_require__(315);
 
 	/** `Object#toString` result references. */
 	var symbolTag = '[object Symbol]';
@@ -41805,10 +41762,10 @@
 
 
 /***/ },
-/* 346 */
+/* 344 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoizeCapped = __webpack_require__(347);
+	var memoizeCapped = __webpack_require__(345);
 
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -41839,10 +41796,10 @@
 
 
 /***/ },
-/* 347 */
+/* 345 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoize = __webpack_require__(348);
+	var memoize = __webpack_require__(346);
 
 	/** Used as the maximum memoize cache size. */
 	var MAX_MEMOIZE_SIZE = 500;
@@ -41871,10 +41828,10 @@
 
 
 /***/ },
-/* 348 */
+/* 346 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(277);
+	var MapCache = __webpack_require__(275);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -41950,10 +41907,10 @@
 
 
 /***/ },
-/* 349 */
+/* 347 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(350);
+	var baseToString = __webpack_require__(348);
 
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -41984,13 +41941,13 @@
 
 
 /***/ },
-/* 350 */
+/* 348 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(267),
-	    arrayMap = __webpack_require__(244),
-	    isArray = __webpack_require__(308),
-	    isSymbol = __webpack_require__(345);
+	var Symbol = __webpack_require__(265),
+	    arrayMap = __webpack_require__(242),
+	    isArray = __webpack_require__(306),
+	    isSymbol = __webpack_require__(343);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -42027,10 +41984,10 @@
 
 
 /***/ },
-/* 351 */
+/* 349 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isSymbol = __webpack_require__(345);
+	var isSymbol = __webpack_require__(343);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -42054,11 +42011,11 @@
 
 
 /***/ },
-/* 352 */
+/* 350 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHasIn = __webpack_require__(353),
-	    hasPath = __webpack_require__(354);
+	var baseHasIn = __webpack_require__(351),
+	    hasPath = __webpack_require__(352);
 
 	/**
 	 * Checks if `path` is a direct or inherited property of `object`.
@@ -42094,7 +42051,7 @@
 
 
 /***/ },
-/* 353 */
+/* 351 */
 /***/ function(module, exports) {
 
 	/**
@@ -42113,15 +42070,15 @@
 
 
 /***/ },
-/* 354 */
+/* 352 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(343),
-	    isArguments = __webpack_require__(315),
-	    isArray = __webpack_require__(308),
-	    isIndex = __webpack_require__(321),
-	    isLength = __webpack_require__(324),
-	    toKey = __webpack_require__(351);
+	var castPath = __webpack_require__(341),
+	    isArguments = __webpack_require__(313),
+	    isArray = __webpack_require__(306),
+	    isIndex = __webpack_require__(319),
+	    isLength = __webpack_require__(322),
+	    toKey = __webpack_require__(349);
 
 	/**
 	 * Checks if `path` exists on `object`.
@@ -42158,7 +42115,7 @@
 
 
 /***/ },
-/* 355 */
+/* 353 */
 /***/ function(module, exports) {
 
 	/**
@@ -42185,13 +42142,13 @@
 
 
 /***/ },
-/* 356 */
+/* 354 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(357),
-	    basePropertyDeep = __webpack_require__(358),
-	    isKey = __webpack_require__(344),
-	    toKey = __webpack_require__(351);
+	var baseProperty = __webpack_require__(355),
+	    basePropertyDeep = __webpack_require__(356),
+	    isKey = __webpack_require__(342),
+	    toKey = __webpack_require__(349);
 
 	/**
 	 * Creates a function that returns the value at `path` of a given object.
@@ -42223,7 +42180,7 @@
 
 
 /***/ },
-/* 357 */
+/* 355 */
 /***/ function(module, exports) {
 
 	/**
@@ -42243,10 +42200,10 @@
 
 
 /***/ },
-/* 358 */
+/* 356 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(342);
+	var baseGet = __webpack_require__(340);
 
 	/**
 	 * A specialized version of `baseProperty` which supports deep paths.
@@ -42265,11 +42222,11 @@
 
 
 /***/ },
-/* 359 */
+/* 357 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseEach = __webpack_require__(360),
-	    isArrayLike = __webpack_require__(331);
+	var baseEach = __webpack_require__(358),
+	    isArrayLike = __webpack_require__(329);
 
 	/**
 	 * The base implementation of `_.map` without support for iteratee shorthands.
@@ -42293,11 +42250,11 @@
 
 
 /***/ },
-/* 360 */
+/* 358 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseForOwn = __webpack_require__(361),
-	    createBaseEach = __webpack_require__(364);
+	var baseForOwn = __webpack_require__(359),
+	    createBaseEach = __webpack_require__(362);
 
 	/**
 	 * The base implementation of `_.forEach` without support for iteratee shorthands.
@@ -42313,11 +42270,11 @@
 
 
 /***/ },
-/* 361 */
+/* 359 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFor = __webpack_require__(362),
-	    keys = __webpack_require__(312);
+	var baseFor = __webpack_require__(360),
+	    keys = __webpack_require__(310);
 
 	/**
 	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -42335,10 +42292,10 @@
 
 
 /***/ },
-/* 362 */
+/* 360 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(363);
+	var createBaseFor = __webpack_require__(361);
 
 	/**
 	 * The base implementation of `baseForOwn` which iterates over `object`
@@ -42357,7 +42314,7 @@
 
 
 /***/ },
-/* 363 */
+/* 361 */
 /***/ function(module, exports) {
 
 	/**
@@ -42388,10 +42345,10 @@
 
 
 /***/ },
-/* 364 */
+/* 362 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(331);
+	var isArrayLike = __webpack_require__(329);
 
 	/**
 	 * Creates a `baseEach` or `baseEachRight` function.
@@ -42426,11 +42383,11 @@
 
 
 /***/ },
-/* 365 */
+/* 363 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMerge = __webpack_require__(366),
-	    createAssigner = __webpack_require__(386);
+	var baseMerge = __webpack_require__(364),
+	    createAssigner = __webpack_require__(384);
 
 	/**
 	 * This method is like `_.assign` except that it recursively merges own and
@@ -42471,15 +42428,15 @@
 
 
 /***/ },
-/* 366 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(248),
-	    assignMergeValue = __webpack_require__(367),
-	    baseFor = __webpack_require__(362),
-	    baseMergeDeep = __webpack_require__(370),
-	    isObject = __webpack_require__(272),
-	    keysIn = __webpack_require__(383);
+	var Stack = __webpack_require__(246),
+	    assignMergeValue = __webpack_require__(365),
+	    baseFor = __webpack_require__(360),
+	    baseMergeDeep = __webpack_require__(368),
+	    isObject = __webpack_require__(270),
+	    keysIn = __webpack_require__(381);
 
 	/**
 	 * The base implementation of `_.merge` without support for multiple sources.
@@ -42518,11 +42475,11 @@
 
 
 /***/ },
-/* 367 */
+/* 365 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(368),
-	    eq = __webpack_require__(253);
+	var baseAssignValue = __webpack_require__(366),
+	    eq = __webpack_require__(251);
 
 	/**
 	 * This function is like `assignValue` except that it doesn't assign
@@ -42544,10 +42501,10 @@
 
 
 /***/ },
-/* 368 */
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var defineProperty = __webpack_require__(369);
+	var defineProperty = __webpack_require__(367);
 
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -42575,10 +42532,10 @@
 
 
 /***/ },
-/* 369 */
+/* 367 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(263);
+	var getNative = __webpack_require__(261);
 
 	var defineProperty = (function() {
 	  try {
@@ -42592,23 +42549,23 @@
 
 
 /***/ },
-/* 370 */
+/* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignMergeValue = __webpack_require__(367),
-	    cloneBuffer = __webpack_require__(371),
-	    cloneTypedArray = __webpack_require__(372),
-	    copyArray = __webpack_require__(374),
-	    initCloneObject = __webpack_require__(375),
-	    isArguments = __webpack_require__(315),
-	    isArray = __webpack_require__(308),
-	    isArrayLikeObject = __webpack_require__(378),
-	    isBuffer = __webpack_require__(318),
-	    isFunction = __webpack_require__(265),
-	    isObject = __webpack_require__(272),
-	    isPlainObject = __webpack_require__(379),
-	    isTypedArray = __webpack_require__(322),
-	    toPlainObject = __webpack_require__(380);
+	var assignMergeValue = __webpack_require__(365),
+	    cloneBuffer = __webpack_require__(369),
+	    cloneTypedArray = __webpack_require__(370),
+	    copyArray = __webpack_require__(372),
+	    initCloneObject = __webpack_require__(373),
+	    isArguments = __webpack_require__(313),
+	    isArray = __webpack_require__(306),
+	    isArrayLikeObject = __webpack_require__(376),
+	    isBuffer = __webpack_require__(316),
+	    isFunction = __webpack_require__(263),
+	    isObject = __webpack_require__(270),
+	    isPlainObject = __webpack_require__(377),
+	    isTypedArray = __webpack_require__(320),
+	    toPlainObject = __webpack_require__(378);
 
 	/**
 	 * A specialized version of `baseMerge` for arrays and objects which performs
@@ -42691,10 +42648,10 @@
 
 
 /***/ },
-/* 371 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(268);
+	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(266);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -42730,13 +42687,13 @@
 
 	module.exports = cloneBuffer;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(319)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(317)(module)))
 
 /***/ },
-/* 372 */
+/* 370 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cloneArrayBuffer = __webpack_require__(373);
+	var cloneArrayBuffer = __webpack_require__(371);
 
 	/**
 	 * Creates a clone of `typedArray`.
@@ -42755,10 +42712,10 @@
 
 
 /***/ },
-/* 373 */
+/* 371 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Uint8Array = __webpack_require__(301);
+	var Uint8Array = __webpack_require__(299);
 
 	/**
 	 * Creates a clone of `arrayBuffer`.
@@ -42777,7 +42734,7 @@
 
 
 /***/ },
-/* 374 */
+/* 372 */
 /***/ function(module, exports) {
 
 	/**
@@ -42803,12 +42760,12 @@
 
 
 /***/ },
-/* 375 */
+/* 373 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseCreate = __webpack_require__(376),
-	    getPrototype = __webpack_require__(377),
-	    isPrototype = __webpack_require__(328);
+	var baseCreate = __webpack_require__(374),
+	    getPrototype = __webpack_require__(375),
+	    isPrototype = __webpack_require__(326);
 
 	/**
 	 * Initializes an object clone.
@@ -42827,10 +42784,10 @@
 
 
 /***/ },
-/* 376 */
+/* 374 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(272);
+	var isObject = __webpack_require__(270);
 
 	/** Built-in value references. */
 	var objectCreate = Object.create;
@@ -42863,10 +42820,10 @@
 
 
 /***/ },
-/* 377 */
+/* 375 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(330);
+	var overArg = __webpack_require__(328);
 
 	/** Built-in value references. */
 	var getPrototype = overArg(Object.getPrototypeOf, Object);
@@ -42875,11 +42832,11 @@
 
 
 /***/ },
-/* 378 */
+/* 376 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(331),
-	    isObjectLike = __webpack_require__(317);
+	var isArrayLike = __webpack_require__(329),
+	    isObjectLike = __webpack_require__(315);
 
 	/**
 	 * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -42914,12 +42871,12 @@
 
 
 /***/ },
-/* 379 */
+/* 377 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(266),
-	    getPrototype = __webpack_require__(377),
-	    isObjectLike = __webpack_require__(317);
+	var baseGetTag = __webpack_require__(264),
+	    getPrototype = __webpack_require__(375),
+	    isObjectLike = __webpack_require__(315);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -42982,11 +42939,11 @@
 
 
 /***/ },
-/* 380 */
+/* 378 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(381),
-	    keysIn = __webpack_require__(383);
+	var copyObject = __webpack_require__(379),
+	    keysIn = __webpack_require__(381);
 
 	/**
 	 * Converts `value` to a plain object flattening inherited enumerable string
@@ -43020,11 +42977,11 @@
 
 
 /***/ },
-/* 381 */
+/* 379 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignValue = __webpack_require__(382),
-	    baseAssignValue = __webpack_require__(368);
+	var assignValue = __webpack_require__(380),
+	    baseAssignValue = __webpack_require__(366);
 
 	/**
 	 * Copies properties of `source` to `object`.
@@ -43066,11 +43023,11 @@
 
 
 /***/ },
-/* 382 */
+/* 380 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(368),
-	    eq = __webpack_require__(253);
+	var baseAssignValue = __webpack_require__(366),
+	    eq = __webpack_require__(251);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -43100,12 +43057,12 @@
 
 
 /***/ },
-/* 383 */
+/* 381 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(313),
-	    baseKeysIn = __webpack_require__(384),
-	    isArrayLike = __webpack_require__(331);
+	var arrayLikeKeys = __webpack_require__(311),
+	    baseKeysIn = __webpack_require__(382),
+	    isArrayLike = __webpack_require__(329);
 
 	/**
 	 * Creates an array of the own and inherited enumerable property names of `object`.
@@ -43138,12 +43095,12 @@
 
 
 /***/ },
-/* 384 */
+/* 382 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(272),
-	    isPrototype = __webpack_require__(328),
-	    nativeKeysIn = __webpack_require__(385);
+	var isObject = __webpack_require__(270),
+	    isPrototype = __webpack_require__(326),
+	    nativeKeysIn = __webpack_require__(383);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -43177,7 +43134,7 @@
 
 
 /***/ },
-/* 385 */
+/* 383 */
 /***/ function(module, exports) {
 
 	/**
@@ -43203,11 +43160,11 @@
 
 
 /***/ },
-/* 386 */
+/* 384 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(387),
-	    isIterateeCall = __webpack_require__(394);
+	var baseRest = __webpack_require__(385),
+	    isIterateeCall = __webpack_require__(392);
 
 	/**
 	 * Creates a function like `_.assign`.
@@ -43246,12 +43203,12 @@
 
 
 /***/ },
-/* 387 */
+/* 385 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(355),
-	    overRest = __webpack_require__(388),
-	    setToString = __webpack_require__(390);
+	var identity = __webpack_require__(353),
+	    overRest = __webpack_require__(386),
+	    setToString = __webpack_require__(388);
 
 	/**
 	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -43269,10 +43226,10 @@
 
 
 /***/ },
-/* 388 */
+/* 386 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(389);
+	var apply = __webpack_require__(387);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -43311,7 +43268,7 @@
 
 
 /***/ },
-/* 389 */
+/* 387 */
 /***/ function(module, exports) {
 
 	/**
@@ -43338,11 +43295,11 @@
 
 
 /***/ },
-/* 390 */
+/* 388 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetToString = __webpack_require__(391),
-	    shortOut = __webpack_require__(393);
+	var baseSetToString = __webpack_require__(389),
+	    shortOut = __webpack_require__(391);
 
 	/**
 	 * Sets the `toString` method of `func` to return `string`.
@@ -43358,12 +43315,12 @@
 
 
 /***/ },
-/* 391 */
+/* 389 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(392),
-	    defineProperty = __webpack_require__(369),
-	    identity = __webpack_require__(355);
+	var constant = __webpack_require__(390),
+	    defineProperty = __webpack_require__(367),
+	    identity = __webpack_require__(353);
 
 	/**
 	 * The base implementation of `setToString` without support for hot loop shorting.
@@ -43386,7 +43343,7 @@
 
 
 /***/ },
-/* 392 */
+/* 390 */
 /***/ function(module, exports) {
 
 	/**
@@ -43418,7 +43375,7 @@
 
 
 /***/ },
-/* 393 */
+/* 391 */
 /***/ function(module, exports) {
 
 	/** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -43461,13 +43418,13 @@
 
 
 /***/ },
-/* 394 */
+/* 392 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(253),
-	    isArrayLike = __webpack_require__(331),
-	    isIndex = __webpack_require__(321),
-	    isObject = __webpack_require__(272);
+	var eq = __webpack_require__(251),
+	    isArrayLike = __webpack_require__(329),
+	    isIndex = __webpack_require__(319),
+	    isObject = __webpack_require__(270);
 
 	/**
 	 * Checks if the given arguments are from an iteratee call.
@@ -43497,6 +43454,102 @@
 
 
 /***/ },
+/* 393 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/**
+	 * 
+	 */
+	var Reflux = __webpack_require__(174);
+
+	var MapActions = {
+	    init: Reflux.createAction(),
+	    getMoreMarkers: Reflux.createAction(),
+	    putPlaceOnMap: Reflux.createAction(),
+	    deletePlaceOnMap: Reflux.createAction()
+	};
+
+	module.exports = MapActions;
+
+/***/ },
+/* 394 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	/**
+	 * 
+	 */
+	var Reflux = __webpack_require__(174);
+	var MapActions = __webpack_require__(393);
+
+	var _require = __webpack_require__(224),
+	    ApiCalls = _require.ApiCalls;
+
+	var MapStore = Reflux.createStore({
+	    init: function init() {
+	        this.listenTo(MapActions.getMoreMarkers, this.onGetMoreMarkers);
+	        this.listenTo(MapActions.putPlaceOnMap, this.onPutPlaceOnMap);
+	        this.listenTo(MapActions.deletePlaceOnMap, this.onDeletePlaceOnMap);
+
+	        this.markers = [];
+	        this.place = [];
+	    },
+	    initMarkers: function initMarkers(markers) {
+	        if (markers) {
+	            this.markers = markers;
+	        } else {
+	            // If server rendering is disabled, we must get post from API
+	            this._getMarkers();
+	        }
+	    },
+	    onGetMoreMarkers: function onGetMoreMarkers(lat, lng, radius, limit) {
+	        // Get more posts from server
+	        this._getMarkers(lat, lng, radius, limit);
+	    },
+
+
+	    // _getMarkers(radius = 1000) {
+	    //     ApiCalls.getMarkers(radius).done( (markers) => {
+	    //         this.markers = this.markers.concat(markers);
+	    //         this.trigger();
+	    //     });
+	    // }
+	    _getMarkers: function _getMarkers(lat, lng, radius, limit) {
+	        var _this = this;
+
+	        ApiCalls.getMarkersNear(lat, lng, radius, limit).done(function (markers) {
+	            _this.markers = _this.markers.concat(markers);
+	            _this.trigger();
+	        });
+	    },
+	    onPutPlaceOnMap: function onPutPlaceOnMap(lat, lng) {
+	        this.place = [{
+	            "_id": {
+	                "$oid": "dummy123"
+	            },
+	            "pindex": "3",
+	            "userId": "2",
+	            "location": {
+	                "type": "Point",
+	                "coordinates": [lat, lng]
+	            }
+	        }];
+	        this.trigger();
+	    },
+	    onDeletePlaceOnMap: function onDeletePlaceOnMap(lat, lng) {
+
+	        // if (this.place.location.coordinates.lat = lat) {
+	        //     this.place = []
+	        // }
+	    }
+	});
+
+	module.exports = MapStore;
+
+/***/ },
 /* 395 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -43512,7 +43565,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _function = __webpack_require__(174);
+	var _function = __webpack_require__(195);
 
 	var _function2 = _interopRequireDefault(_function);
 
